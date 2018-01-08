@@ -1,10 +1,10 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="1.4.4"
+VERSION="1.4.5"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 ISSUE_URL="https://github.com/munisisazade/create-django-app/issues"
-
+PACKAGE_CHANGE="#pkg-resources"
 
 #usage: ChangeColor $COLOR text/background
 function ChangeColor()
@@ -111,7 +111,7 @@ function base_script {
 		echo -e "Swich virtualenviroment"
 		source .venv/bin/activate
 		echo -e "Installing Django and Pillow with pip library"
-		pip install django pillow gunicorn uwsgi
+		pip install django pillow gunicorn uwsgi psycopg2
 		echo -e "Updating pip library .."
 		pip install -U pip
 		read -p "Do you want to install aditional package (y,n)?" aditional
@@ -120,14 +120,28 @@ function base_script {
 		    read -p "Package name or names: " packages_list
 		    pip install $packages_list
 		fi
+
 		echo -e "Create requirement.txt"
+		# touch requirements.txt
+		# echo "Django" >> requirements.txt
+		# echo "psycopg2" >> requirements.txt
+		# echo "uwsgi" >> requirements.txt
 		pip freeze > requirements.txt
+		sed -i -e 's|pkg-resources|'$PACKAGE_CHANGE'|g' requirements.txt
 		AUTHOR_NAME="Munis Isazade      <munisisazade@gmail.com>    Senior Django developer"
 		echo $AUTHOR_NAME >> contributors.txt
 		echo "Creating .gitignore file"
+		echo "pgdb/" >> .gitignore
 		echo ".idea/" >> .gitignore
 		echo ".venv" >> .gitignore
 		echo "db.sqlite3" >> .gitignore
+		echo "Creating .dockerignore file"
+		touch .dockerignore
+		echo ".idea/" >> .dockerignore
+		echo ".venv/" >> .dockerignore
+		echo "contributors.txt" >> .dockerignore
+		echo "*.pyc" >> .dockerignore
+		echo ".git/" >> .dockerignore
 		read -p "Project name: " PROJ_NAME
 		django-admin startproject $PROJ_NAME .
 		echo -e "Create app"
@@ -135,6 +149,7 @@ function base_script {
 		python manage.py startapp $APP_NAME
 		echo -e "Creating Database .."
 		python manage.py migrate
+		echo "STATIC_ROOT='static'" >> $PROJ_NAME/settings.py
 		progress30
 		docker_container
 		ask_git
@@ -168,6 +183,8 @@ function progress30 {
 }
 
 function docker_container {
+	echo -e "Creating env_file...  $(ChangeColor green text)OK$(ChangeColor white text)"
+	env_file
 	echo -e "Creating mime_types...  $(ChangeColor green text)OK$(ChangeColor white text)"
 	mime_types
 	echo -e "Creating docker_file...  $(ChangeColor green text)OK$(ChangeColor white text)"
@@ -176,6 +193,28 @@ function docker_container {
 	docker_compose
 	echo -e "Creating uwsgi_ini...  $(ChangeColor green text)OK$(ChangeColor white text)"
 	uwsgi_ini
+}
+
+function env_file {
+	touch .env
+	echo "# PostgreSQL" >> .env
+	read -p "PostgreSQL Database name " POSGRES_DB_NAME
+	if [ "$POSGRES_DB_NAME" == '' ] ; then
+	    POSGRES_DB_NAME=db_rds
+	fi
+	echo "POSTGRES_DB=$POSGRES_DB_NAME" >> .env
+	read -p "PostgreSQL Database Username " POSGRES_DB_USER
+	if [ "$POSGRES_DB_USER" == '' ] ; then
+	    POSGRES_DB_USER=db_user
+	fi
+	echo "POSTGRES_USER=$POSGRES_DB_USER" >> .env
+	read -p "PostgreSQL Database Password " POSGRES_DB_PASSWORD
+	if [ "$POSGRES_DB_PASSWORD" == '' ] ; then
+	    POSGRES_DB_PASSWORD=jBQjMFqxTSGTk6iT
+	fi
+	echo "POSTGRES_PASSWORD=$POSGRES_DB_PASSWORD" >> .env
+	echo "POSTGRES_HOST=postgres" >> .env
+	echo "POSTGRES_PORT=5432" >> .env
 }
 
 function mime_types {
@@ -278,6 +317,7 @@ function docker_file {
 	echo "# Ensure that Python outputs everything that's printed inside" >> Dockerfile
 	echo "# the application rather than buffering it." >> Dockerfile
 	echo "ENV PYTHONUNBUFFERED 1" >> Dockerfile
+	echo "ENV APP_ROOT /code" >> Dockerfile
 	echo "" >> Dockerfile
 	echo "# Copy in your requirements file" >> Dockerfile
 	echo "ADD requirements.txt /requirements.txt" >> Dockerfile
@@ -305,7 +345,7 @@ function docker_file {
 	echo "    && pyvenv /venv \\" >> Dockerfile
 	echo "    && /venv/bin/pip install -U pip \\" >> Dockerfile
 	echo '    && LIBRARY_PATH=/lib:/usr/lib /bin/sh -c "/venv/bin/pip install --no-cache-dir -r /requirements.txt" \' >> Dockerfile
-	echo '    && runDeps="$( \\\' >> Dockerfile
+	echo '    && runDeps="$( \' >> Dockerfile
 	echo "            scanelf --needed --nobanner --recursive /venv \\" >> Dockerfile
 	echo "                    | awk '{ gsub(/,/, \"\nso:\", \$2); print \"so:\" \$2 }' \\" >> Dockerfile
 	echo "                    | sort -u \\" >> Dockerfile
@@ -316,9 +356,9 @@ function docker_file {
 	echo "    && apk del .build-deps" >> Dockerfile
 	echo "" >> Dockerfile
 	echo "# Copy your application code to the container (make sure you create a .dockerignore file if any large files or directories should be excluded)" >> Dockerfile
-	echo "RUN mkdir /code/" >> Dockerfile
-	echo "WORKDIR /code/" >> Dockerfile
-	echo "ADD . /code/" >> Dockerfile
+	echo "RUN mkdir \${APP_ROOT}" >> Dockerfile
+	echo "WORKDIR \${APP_ROOT}" >> Dockerfile
+	echo "ADD . \${APP_ROOT}" >> Dockerfile
 	echo "COPY mime.types /etc/mime.types" >> Dockerfile
 	echo "" >> Dockerfile
 	echo "# uWSGI will listen on this port" >> Dockerfile
@@ -340,6 +380,19 @@ function docker_compose {
 	echo "version: '3'" >> docker-compose.yml
 	echo "" >> docker-compose.yml
 	echo "services:" >> docker-compose.yml
+	echo "" >> docker-compose.yml
+	echo "  postgres:" >> docker-compose.yml
+	echo "    container_name:  postgres-db" >> docker-compose.yml
+	echo "    image:           postgres:9.6" >> docker-compose.yml
+	echo "    ports:" >> docker-compose.yml
+	echo "      - 5432:5432 # Bind host port 5432 to PostgreSQL port 5432" >> docker-compose.yml
+	echo "    volumes:" >> docker-compose.yml
+	echo "      - ./pgdb:/var/lib/postgresql/data" >> docker-compose.yml
+	echo "    env_file: .env" >> docker-compose.yml
+	echo "    environment:" >> docker-compose.yml
+	echo "      - LC_ALL=C.UTF-8" >> docker-compose.yml
+	echo "" >> docker-compose.yml
+	echo "" >> docker-compose.yml
 	echo "  web:" >> docker-compose.yml
 	echo "    container_name: $PROJ_NAME" >> docker-compose.yml
 	echo "    build: ." >> docker-compose.yml
@@ -348,24 +401,28 @@ function docker_compose {
 	echo "      - DEBUG=True" >> docker-compose.yml
 	echo "      - TIMEOUT=300" >> docker-compose.yml
 	echo "      - HTTP_PORT=$DOCKER_PORT" >> docker-compose.yml
-	OTHERPORT=`expr $DOCKER_PORT+1`
+	OTHERPORT=`expr $DOCKER_PORT + 1`
 	echo "      - STATS_PORT=$OTHERPORT" >> docker-compose.yml
 	echo "    volumes:" >> docker-compose.yml
 	echo "      - .:/code" >> docker-compose.yml
 	echo "    ports:" >> docker-compose.yml
 	echo "      - \"$DOCKER_PORT:$DOCKER_PORT\"" >> docker-compose.yml
+	echo "    links:" >> docker-compose.yml
+	echo "      - postgres" >> docker-compose.yml
+	echo "    depends_on:" >> docker-compose.yml
+	echo "      - \"postgres\"" >> docker-compose.yml
 }
 
 function uwsgi_ini {
 	touch uwsgi.ini
 	echo "[uwsgi]" >> uwsgi.ini
-	echo "env = DJANGO_SETTINGS_MODULE=drongo.settings" >> uwsgi.ini
+	echo "env = DJANGO_SETTINGS_MODULE=$PROJ_NAME.settings" >> uwsgi.ini
 	echo "env = UWSGI_VIRTUALENV=/venv" >> uwsgi.ini
 	echo "env = IS_WSGI=True" >> uwsgi.ini
 	echo "env = LANG=en_US.UTF-8" >> uwsgi.ini
 	echo "workdir = /code" >> uwsgi.ini
 	echo "chdir = /code" >> uwsgi.ini
-	echo "module = drongo.wsgi:application" >> uwsgi.ini
+	echo "module = $PROJ_NAME.wsgi:application" >> uwsgi.ini
 	echo "master = True" >> uwsgi.ini
 	echo "pidfile = /tmp/app-master.pid" >> uwsgi.ini
 	echo "vacuum = True" >> uwsgi.ini
@@ -382,6 +439,7 @@ function uwsgi_ini {
 	echo "static-map = /static=%(workdir)/static" >> uwsgi.ini
 	echo "if-exists = %(workdir)/media" >> uwsgi.ini
 	echo "route = /media/(.*) media:%(workdir)/media/\$1" >> uwsgi.ini
+	echo "endif =" >> uwsgi.ini
 }
 
 function ask_git { 
