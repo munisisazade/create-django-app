@@ -1,7 +1,7 @@
 #!/bin/bash
 
 COMMAND_NAME=create-django-app
-
+LOCAL_COMMAND_DIRECTORY=~/.local/bin/
 #usage: ChangeColor $COLOR text/background
 function ChangeColor()
 {
@@ -39,7 +39,18 @@ function ChangeColor()
 
 cp  base.sh $COMMAND_NAME
 chmod +x $COMMAND_NAME
-mv $COMMAND_NAME ~/.local/bin/
+if [ -d $LOCAL_COMMAND_DIRECTORY ]; then
+	mv $COMMAND_NAME $LOCAL_COMMAND_DIRECTORY
+else
+	cd ~
+	mkdir .local
+	cd .local/
+	mkdir bin/
+	mv $COMMAND_NAME $LOCAL_COMMAND_DIRECTORY
+	sudo echo "# set PATH so it includes user's private bin directories" >> ~/.profile
+	sudo echo "PATH=\"\$HOME/bin:\$HOME/.local/bin:\$PATH\"" >> ~/.profile
+fi
+
  
 echo -e "$(ChangeColor green text)"
 echo -ne '##                    (0%)\r'
