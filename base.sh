@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="1.4.5"
+VERSION="1.4.6"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 ISSUE_URL="https://github.com/munisisazade/create-django-app/issues"
@@ -80,6 +80,23 @@ function helping {
 
 }
 
+function options_usage {
+	echo -e "\n"
+	echo -e " Options usage example: create-react-app $(ChangeColor green text)$FILE$(ChangeColor white text) --no-posgres"
+  	echo -e "\n"
+  	echo -e " Options:"
+  	echo -e "\n"
+  	echo -e "  -V, --version                            output the version number"
+  	echo -e "  --verbose                                print additional logs"
+  	echo -e "  -h, --help                               output usage information"
+  	echo -e "  -a, --author                             about author information"
+  	echo -e "  --no-posgres                             if dont want use postgres db"
+  	echo -e "  Only $(ChangeColor green text)$FILE$(ChangeColor white text) is required."
+  	echo -e "\n"
+  	echo -e "  If you have any problems, do not hesitate to file an issue:"
+  	echo -e "    $(ChangeColor blue text)$ISSUE_URL$(ChangeColor white text)"	
+}
+
 
 #function Get version
 function get_version {
@@ -92,6 +109,31 @@ function get_author {
 
 function base_script {
 	FILE=$1
+	OPTIONS=$2
+
+	if [[ -v OPTIONS ]];then
+		case ${OPTIONS} in
+
+			-a | --author)
+				get_author
+			;;
+
+			-V | --version)
+				get_version
+			;;
+
+		    -h | --help)
+
+				helping
+
+			;;
+			--no-posgres)
+				NOT_POSGRES="No postgres"
+			;;
+
+			
+		esac		
+	fi
 	if [ -d $FILE ]; then
 	   echo "The directory $(ChangeColor green text)$FILE$(ChangeColor white text) contains files that could conflict:$(ChangeColor red text)"
 	   cd $FILE
@@ -100,8 +142,9 @@ function base_script {
 	   echo -e "$(ChangeColor white text)Either try using a new directory name, or remove the files listed above"
 	   exit 1
 	else
-	    echo "File $FILE does not exist."
-	    echo "Creating File ..."
+
+	    echo "Creating File ... $NOT_POSGRES"
+	    sleep 3
 	    mkdir $FILE
 	    echo -e "Get into $FILE"
 	    cd $FILE
@@ -183,8 +226,13 @@ function progress30 {
 }
 
 function docker_container {
-	echo -e "Creating env_file...  $(ChangeColor green text)OK$(ChangeColor white text)"
-	env_file
+	if [[ -v NOT_POSGRES ]];then
+		echo "Not create env_file $(ChangeColor red text)FAIL$(ChangeColor white text)"
+	else
+		env_file
+		echo -e "Creating env_file...  $(ChangeColor green text)OK$(ChangeColor white text)"
+	fi
+	
 	echo -e "Creating mime_types...  $(ChangeColor green text)OK$(ChangeColor white text)"
 	mime_types
 	echo -e "Creating docker_file...  $(ChangeColor green text)OK$(ChangeColor white text)"
@@ -378,21 +426,25 @@ function docker_file {
 function docker_compose {
 	touch docker-compose.yml
 	echo "version: '3'" >> docker-compose.yml
-	echo "" >> docker-compose.yml
-	echo "services:" >> docker-compose.yml
-	echo "" >> docker-compose.yml
-	echo "  postgres:" >> docker-compose.yml
-	echo "    container_name:  postgres-db" >> docker-compose.yml
-	echo "    image:           postgres:9.6" >> docker-compose.yml
-	echo "    ports:" >> docker-compose.yml
-	echo "      - 5432:5432 # Bind host port 5432 to PostgreSQL port 5432" >> docker-compose.yml
-	echo "    volumes:" >> docker-compose.yml
-	echo "      - ./pgdb:/var/lib/postgresql/data" >> docker-compose.yml
-	echo "    env_file: .env" >> docker-compose.yml
-	echo "    environment:" >> docker-compose.yml
-	echo "      - LC_ALL=C.UTF-8" >> docker-compose.yml
-	echo "" >> docker-compose.yml
-	echo "" >> docker-compose.yml
+	if [[ -v NOT_POSGRES ]];then
+		echo "" >> docker-compose.yml	
+	else
+		echo "" >> docker-compose.yml
+		echo "services:" >> docker-compose.yml
+		echo "" >> docker-compose.yml
+		echo "  postgres:" >> docker-compose.yml
+		echo "    container_name:  postgres-db" >> docker-compose.yml
+		echo "    image:           postgres:9.6" >> docker-compose.yml
+		echo "    ports:" >> docker-compose.yml
+		echo "      - 5432:5432 # Bind host port 5432 to PostgreSQL port 5432" >> docker-compose.yml
+		echo "    volumes:" >> docker-compose.yml
+		echo "      - ./pgdb:/var/lib/postgresql/data" >> docker-compose.yml
+		echo "    env_file: .env" >> docker-compose.yml
+		echo "    environment:" >> docker-compose.yml
+		echo "      - LC_ALL=C.UTF-8" >> docker-compose.yml
+		echo "" >> docker-compose.yml
+		echo "" >> docker-compose.yml
+	fi
 	echo "  web:" >> docker-compose.yml
 	echo "    container_name: $PROJ_NAME" >> docker-compose.yml
 	echo "    build: ." >> docker-compose.yml
@@ -407,10 +459,14 @@ function docker_compose {
 	echo "      - .:/code" >> docker-compose.yml
 	echo "    ports:" >> docker-compose.yml
 	echo "      - \"$DOCKER_PORT:$DOCKER_PORT\"" >> docker-compose.yml
-	echo "    links:" >> docker-compose.yml
-	echo "      - postgres" >> docker-compose.yml
-	echo "    depends_on:" >> docker-compose.yml
-	echo "      - \"postgres\"" >> docker-compose.yml
+	if [[ -v NOT_POSGRES ]];then
+		echo "" >> docker-compose.yml
+	else
+		echo "    links:" >> docker-compose.yml
+		echo "      - postgres" >> docker-compose.yml
+		echo "    depends_on:" >> docker-compose.yml
+		echo "      - \"postgres\"" >> docker-compose.yml
+	fi
 }
 
 function uwsgi_ini {
@@ -483,14 +539,44 @@ function finish {
 
 }
 
+function test_elemek {
+	FILE=$1
+	OPTIONS=$2
 
+	if [[ -v OPTIONS ]];then
+		case ${OPTIONS} in
+
+			-a | --author)
+				get_author
+			;;
+
+			-V | --version)
+				get_version
+			;;
+
+		    -h | --help)
+
+				helping
+
+			;;
+			*)
+				usage 
+			;;
+
+			
+		esac		
+	else
+		echo "Noo"
+	fi
+	
+}
 
 ################
 #### START  ####
 ################
 
 COMMAND=${@:$OPTIND:1}
-
+ARG=${@:$OPTIND+1:1}
 
 #CHECKING PARAMS VALUES
 case ${COMMAND} in
@@ -513,11 +599,12 @@ case ${COMMAND} in
     *)
 
         # if path not provided show usage message
-	    if [ "$#" -ne 1 ]; then
+	    if [ "$#" -ne 1 -a "$#" -ne 2 ]; then
             usage
         fi
         file_dir=${COMMAND}
-        base_script ${file_dir}
+    	arg=${ARG}
+    	base_script ${file_dir} ${arg}	
 
 	;;
 

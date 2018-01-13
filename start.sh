@@ -37,6 +37,8 @@ function ChangeColor()
 	esac
 }
 
+
+
 cp  base.sh $COMMAND_NAME
 chmod +x $COMMAND_NAME
 if [ -d $LOCAL_COMMAND_DIRECTORY ]; then
