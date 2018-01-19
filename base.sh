@@ -162,7 +162,7 @@ function base_script {
 		pip install django pillow gunicorn uwsgi psycopg2
 		if [[ -v OSCAR_APP ]];then
 		echo "(ChangeColor green text)Installing Oscar app ...$(ChangeColor white text)"
-		pip install django-oscar
+		pip install django-oscar django-modeltranslation django-ckeditor
 		fi
 		echo -e "Updating pip library .."
 		pip install -U pip
@@ -205,7 +205,7 @@ function base_script {
 		progress30
 		docker_container
 		if [[ -v OSCAR_APP ]];then
-		echo "(ChangeColor green text)Oscar files configurations ...$(ChangeColor white text)"
+		echo "$(ChangeColor green text)Oscar files configurations ...$(ChangeColor white text)"
 		oscar_configuration
 		fi
 		ask_git

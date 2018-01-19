@@ -1,4 +1,4 @@
-"""#{DJANGO_BASE_APP_NAME} URL Configuration
+"""#{PROJ_NAME} URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.11/topics/http/urls/
@@ -26,13 +26,13 @@ urlpatterns = [
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += i18n_patterns(
-    url(r'^', include("#{DJANGO_APP_NAME}.urls")),
+    url(r'^', include("#{APP_NAME}.urls")),
     url(r'^', application.urls),
     url(r'^page/', include('django.contrib.flatpages.urls')),
 )
 
 
 # This is change default admin panel Headers and titles
-admin.site.site_header = '#{DJANGO_BASE_APP_NAME} Admin'
-admin.site.site_title = '#{DJANGO_BASE_APP_NAME} Administration'
-admin.site.index_title = '#{DJANGO_BASE_APP_NAME} Administration'
+admin.site.site_header = '#{PROJ_NAME} Admin'
+admin.site.site_title = '#{PROJ_NAME} Administration'
+admin.site.index_title = '#{PROJ_NAME} Administration'
