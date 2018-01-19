@@ -2,6 +2,7 @@
 
 COMMAND_NAME=create-django-app
 LOCAL_COMMAND_DIRECTORY=~/.local/bin/
+TLP_DIRECTORY=~/.local/share/
 #usage: ChangeColor $COLOR text/background
 function ChangeColor()
 {
@@ -43,12 +44,21 @@ cp  base.sh $COMMAND_NAME
 chmod +x $COMMAND_NAME
 if [ -d $LOCAL_COMMAND_DIRECTORY ]; then
 	mv $COMMAND_NAME $LOCAL_COMMAND_DIRECTORY
+	if [ -d $TLP_DIRECTORY ]; then
+		cp -r tlp/django_app/ $TLP_DIRECTORY
+	else
+		cd ~/.local/
+		mkdir share
+		cp -r tlp/django_app/ $TLP_DIRECTORY
+	fi
 else
 	cd ~
 	mkdir .local
 	cd .local/
 	mkdir bin/
 	mv $COMMAND_NAME $LOCAL_COMMAND_DIRECTORY
+	mkdir share
+	cp -r tlp/django_app/ $TLP_DIRECTORY
 	sudo echo "# set PATH so it includes user's private bin directories" >> ~/.profile
 	sudo echo "PATH=\"\$HOME/bin:\$HOME/.local/bin:\$PATH\"" >> ~/.profile
 fi

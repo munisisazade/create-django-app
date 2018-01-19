@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="1.4.6"
+VERSION="1.4.7"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 ISSUE_URL="https://github.com/munisisazade/create-django-app/issues"
@@ -91,6 +91,7 @@ function options_usage {
   	echo -e "  -h, --help                               output usage information"
   	echo -e "  -a, --author                             about author information"
   	echo -e "  --no-posgres                             if dont want use postgres db"
+  	echo -e "  --oscar-app                             	add django-oscar ecommerce"
   	echo -e "  Only $(ChangeColor green text)$FILE$(ChangeColor white text) is required."
   	echo -e "\n"
   	echo -e "  If you have any problems, do not hesitate to file an issue:"
@@ -131,6 +132,10 @@ function base_script {
 				NOT_POSGRES="No postgres"
 			;;
 
+			--oscar-app )
+				OSCAR_APP="True"
+			;;
+
 			
 		esac		
 	fi
@@ -143,7 +148,7 @@ function base_script {
 	   exit 1
 	else
 
-	    echo "Creating File ... $NOT_POSGRES"
+	    echo "Creating File ... $NOT_POSGRES $OSCAR_APP"
 	    sleep 3
 	    mkdir $FILE
 	    echo -e "Get into $FILE"
@@ -155,6 +160,10 @@ function base_script {
 		source .venv/bin/activate
 		echo -e "Installing Django and Pillow with pip library"
 		pip install django pillow gunicorn uwsgi psycopg2
+		if [[ -v OSCAR_APP ]];then
+		echo "(ChangeColor green text)Installing Oscar app ...$(ChangeColor white text)"
+		pip install django-oscar
+		fi
 		echo -e "Updating pip library .."
 		pip install -U pip
 		read -p "Do you want to install aditional package (y,n)?" aditional
@@ -195,6 +204,10 @@ function base_script {
 		echo "STATIC_ROOT='static'" >> $PROJ_NAME/settings.py
 		progress30
 		docker_container
+		if [[ -v OSCAR_APP ]];then
+		echo "(ChangeColor green text)Oscar files configurations ...$(ChangeColor white text)"
+		oscar_configuration
+		fi
 		ask_git
 		finish
 	fi
@@ -497,6 +510,28 @@ function uwsgi_ini {
 	echo "route = /media/(.*) media:%(workdir)/media/\$1" >> uwsgi.ini
 	echo "endif =" >> uwsgi.ini
 }
+
+# Oscar configuration add project
+function oscar_configuration {
+	echo -e "Get Django application SECRET_KEY"
+	SECRET_KEY=$(python manage.py diffsettings | grep 'SECRET_KEY' | cut -d' ' -f 3)
+	DJANGO_UP_APP_NAME=$(tr '[:lower:]' '[:upper:]' <<< ${APP_NAME:0:1})${APP_NAME:1}
+	echo -e "configuration files add"
+	cp -r ~/.local/share/django_app/middleware/ $PROJ_NAME/
+	cp -r ~/.local/share/django_app/settings.py $PROJ_NAME/
+	cp -r ~/.local/share/django_app/urls.py $PROJ_NAME/
+	cp -r ~/.local/share/django_app/app/options/ $APP_NAME/
+	cp -r ~/.local/share/django_app/app/forms.py $APP_NAME/
+	cp -r ~/.local/share/django_app/app/signals.py $APP_NAME/
+	cp -r ~/.local/share/django_app/app/tasks.py $APP_NAME/
+	cp -r ~/.local/share/django_app/app/urls.py $APP_NAME/
+	echo -e "settings.py changed."
+	sed -i -e 's|#{SECRET_KEY}|'$SECRET_KEY'|g' -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' -e 's|#{DJANGO_UP_APP_NAME}|'$DJANGO_UP_APP_NAME'|'g $PROJ_NAME/settings.py
+	echo -e "Urls py changed"
+	sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' $PROJ_NAME/urls.py
+	echo -e "Successfuly done [OK]"
+}
+
 
 function ask_git { 
 	read -p "Do you have a github or bitbucket repository (y,n)?" check_git
