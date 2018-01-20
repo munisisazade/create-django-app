@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="1.4.7"
+VERSION="1.4.8"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 ISSUE_URL="https://github.com/munisisazade/create-django-app/issues"
@@ -506,9 +506,10 @@ function uwsgi_ini {
 	echo "harakiri = \$(TIMEOUT)" >> uwsgi.ini
 	echo "print = Your timeout is %(harakiri)" >> uwsgi.ini
 	echo "static-map = /static=%(workdir)/static" >> uwsgi.ini
-	echo "if-exists = %(workdir)/media" >> uwsgi.ini
-	echo "route = /media/(.*) media:%(workdir)/media/\$1" >> uwsgi.ini
-	echo "endif =" >> uwsgi.ini
+	echo "static-map = /media=%(workdir)/media" >> uwsgi.ini
+	# echo "if-exists = %(workdir)/media" >> uwsgi.ini
+	# echo "route = /media/(.*) media:%(workdir)/media/\$1" >> uwsgi.ini
+	# echo "endif =" >> uwsgi.ini
 }
 
 # Oscar configuration add project
