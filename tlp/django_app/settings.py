@@ -288,8 +288,7 @@ if PROD:
     STATIC_ROOT = 'static'
 else:
     STATICFILES_DIRS = [
-        os.path.join(BASE_DIR, "static"),
-        os.path.join(BASE_DIR, "static"),
+        os.path.join(BASE_DIR, "static")
     ]
 
 # STATIC_ROOT = 'static'

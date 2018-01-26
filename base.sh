@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="1.4.8"
+VERSION="1.4.9"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 ISSUE_URL="https://github.com/munisisazade/create-django-app/issues"
@@ -133,7 +133,7 @@ function base_script {
 			;;
 
 			--oscar-app )
-				OSCAR_APP="True"
+				OSCAR_APP="with Oscar app"
 			;;
 
 			
@@ -462,6 +462,11 @@ function docker_compose {
 	echo "    container_name: $PROJ_NAME" >> docker-compose.yml
 	echo "    build: ." >> docker-compose.yml
 	echo "    restart: \"always\"" >> docker-compose.yml
+	if [[ -v NOT_POSGRES ]];then
+		:
+	else
+		echo "    env_file: .env" >> docker-compose.yml
+	fi
 	echo "    environment:" >> docker-compose.yml
 	echo "      - DEBUG=True" >> docker-compose.yml
 	echo "      - TIMEOUT=300" >> docker-compose.yml
@@ -521,6 +526,7 @@ function oscar_configuration {
 	cp -r ~/.local/share/django_app/middleware/ $PROJ_NAME/
 	cp -r ~/.local/share/django_app/settings.py $PROJ_NAME/
 	cp -r ~/.local/share/django_app/urls.py $PROJ_NAME/
+	cp -r ~/.local/share/django_app/app/management/ $APP_NAME/
 	cp -r ~/.local/share/django_app/app/options/ $APP_NAME/
 	cp -r ~/.local/share/django_app/app/forms.py $APP_NAME/
 	cp -r ~/.local/share/django_app/app/signals.py $APP_NAME/
@@ -530,7 +536,12 @@ function oscar_configuration {
 	sed -i -e 's|#{SECRET_KEY}|'$SECRET_KEY'|g' -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' -e 's|#{DJANGO_UP_APP_NAME}|'$DJANGO_UP_APP_NAME'|'g $PROJ_NAME/settings.py
 	echo -e "Urls py changed"
 	sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' $PROJ_NAME/urls.py
+	sed -i -e 's|#{APP_NAME}|'$APP_NAME'|g' $APP_NAME/management/commands/ovveride_templates.py
+	python manage.py migrate
+	mkdir $APP_NAME/templates
+	python manage.py ovveride_templates .venv
 	echo -e "Successfuly done [OK]"
+
 }
 
 
