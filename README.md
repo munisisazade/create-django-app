@@ -20,6 +20,10 @@ Create new Django app with bellow command:
 $ create-django-app talasemia
 ```
 
+# Documentations Usefull Functions #
+
+### Color Change function ###
+![]()
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Django #
