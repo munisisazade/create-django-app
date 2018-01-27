@@ -295,3 +295,22 @@ else:
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+
+
+#----------------------------
+#------------Logging.......
+
+LOG_LEVEL = 'ERROR' if PROD else 'DEBUG'
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': not DEBUG,
+    'formatters': {
+        'standard': {
+            'format': '%(asctime)s [%(levelname)s] %(name)s:=> %(message)s',
+        },
+        'focused': {
+            'format': '\n----------------------\n%(asctime)s [%(levelname)s] %(name)s:=> %(message)s \n----------------------',
+        },
+    },
+}
