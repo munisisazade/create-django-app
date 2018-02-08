@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="1.5.2"
+VERSION="1.5.3"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 ISSUE_URL="https://github.com/munisisazade/create-django-app/issues"
@@ -556,6 +556,8 @@ function ask_git {
 	    	git init
 	    	echo -e "Add $REPO_URL repository to $FILE"
 	    	git remote add origin $REPO_URL
+	    	echo -e "If repository not Empty git pull to fetch master"
+	    	git pull
 	    	echo -e "Add new files to repo"
 	    	git add .
 	    	echo -e "Add new files to repo"
