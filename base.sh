@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="1.5.0"
+VERSION="1.5.1"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 ISSUE_URL="https://github.com/munisisazade/create-django-app/issues"
@@ -72,6 +72,7 @@ function helping {
   	echo -e "  --verbose                                print additional logs"
   	echo -e "  -h, --help                               output usage information"
   	echo -e "  -a, --author                             about author information"
+  	echo -e "  -git, git                                add git repository to current project"
   	echo -e "  Only $(ChangeColor green text)<project-directory>$(ChangeColor white text) is required."
   	echo -e "\n"
   	echo -e "  If you have any problems, do not hesitate to file an issue:"
@@ -595,6 +596,11 @@ function test_elemek {
 
 			-a | --author)
 				get_author
+			;;
+
+			-git | git)
+                ask_git
+                finish
 			;;
 
 			-V | --version)
