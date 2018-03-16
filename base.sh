@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="1.5.4"
+VERSION="1.5.5"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 ISSUE_URL="https://github.com/munisisazade/create-django-app/issues"
@@ -186,6 +186,7 @@ function base_script {
 		echo "Creating .gitignore file"
 		echo "pgdb/" >> .gitignore
 		echo ".idea/" >> .gitignore
+		echo "media/" >> .gitignore
 		echo ".venv" >> .gitignore
 		echo "db.sqlite3" >> .gitignore
 		echo "Creating .dockerignore file"
