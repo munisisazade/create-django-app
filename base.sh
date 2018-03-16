@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="1.5.5"
+VERSION="1.5.6"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 ISSUE_URL="https://github.com/munisisazade/create-django-app/issues"
@@ -156,7 +156,17 @@ function base_script {
 	    cd $FILE
 	    echo -e "First create virtual enviroment"
 	    progress30
+	    echo -e "$(ChangeColor red text)"
 		python3 -m venv .venv
+		if [ $? -eq 0 ]; then
+		    echo "$(ChangeColor white text)OK"
+		else
+		    echo "FAIL $(ChangeColor white text)"
+		    echo "Install python3 virtualenviroment created"
+		    sudo apt-get -y install python3-pip python3-dev libpq-dev python3-venv
+		    sudo apt-get -y install libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk
+		    python3.5 -m venv .venv
+		fi
 		echo -e "Swich virtualenviroment"
 		source .venv/bin/activate
 		echo -e "Installing Django and Pillow with pip library"
@@ -622,6 +632,16 @@ function test_elemek {
 	
 }
 
+function unit_test {
+	echo -e "Test starting...$(ChangeColor red text)"
+	munis
+	if [ $? -eq 0 ]; then
+	    echo "$(ChangeColor white text)OK"
+	else
+	    echo "FAIL $(ChangeColor white text)"
+	fi
+}
+
 ################
 #### START  ####
 ################
@@ -650,6 +670,12 @@ case ${COMMAND} in
 		helping
 
 	;;
+	-t | --test)
+
+		unit_test
+
+	;;
+
 
 
     *)
