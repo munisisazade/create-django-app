@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="1.5.6"
+VERSION="1.5.7"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 ISSUE_URL="https://github.com/munisisazade/create-django-app/issues"
@@ -217,8 +217,11 @@ function base_script {
 		progress30
 		docker_container
 		if [[ -v OSCAR_APP ]];then
-		echo "$(ChangeColor green text)Oscar files configurations ...$(ChangeColor white text)"
-		oscar_configuration
+			echo "$(ChangeColor green text)Oscar files configurations ...$(ChangeColor white text)"
+			oscar_configuration
+		else
+			echo "$(ChangeColor green text)Django2 files configurations ...$(ChangeColor white text)"
+			django_2_configuration
 		fi
 		ask_git
 		finish
@@ -552,6 +555,30 @@ function oscar_configuration {
 	python manage.py migrate
 	mkdir $APP_NAME/templates
 	python manage.py ovveride_templates .venv
+	echo -e "Successfuly done [OK]"
+
+}
+
+function django_2_configuration {
+	echo -e "Get Django application SECRET_KEY"
+	SECRET_KEY=$(python manage.py diffsettings | grep 'SECRET_KEY' | cut -d' ' -f 3)
+	DJANGO_UP_APP_NAME=$(tr '[:lower:]' '[:upper:]' <<< ${APP_NAME:0:1})${APP_NAME:1}
+	echo -e "configuration files add"
+	cp -r ~/.local/share/django_app/middleware/ $PROJ_NAME/
+	cp -r ~/.local/share/django_app/settings_django2.py $PROJ_NAME/settings.py
+	cp -r ~/.local/share/django_app/urls_django2.py $PROJ_NAME/urls.py
+	cp -r ~/.local/share/django_app/app/management/ $APP_NAME/
+	cp -r ~/.local/share/django_app/app/options/ $APP_NAME/
+	cp -r ~/.local/share/django_app/app/forms.py $APP_NAME/
+	cp -r ~/.local/share/django_app/app/signals.py $APP_NAME/
+	cp -r ~/.local/share/django_app/app/tasks.py $APP_NAME/
+	cp -r ~/.local/share/django_app/app/urls.py $APP_NAME/
+	echo -e "settings.py changed."
+	sed -i -e 's|#{SECRET_KEY}|'$SECRET_KEY'|g' -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' -e 's|#{DJANGO_UP_APP_NAME}|'$DJANGO_UP_APP_NAME'|'g $PROJ_NAME/settings.py
+	echo -e "Urls py changed"
+	sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' $PROJ_NAME/urls.py
+	sed -i -e 's|#{APP_NAME}|'$APP_NAME'|g' $APP_NAME/management/commands/ovveride_templates.py
+	python manage.py migrate
 	echo -e "Successfuly done [OK]"
 
 }
