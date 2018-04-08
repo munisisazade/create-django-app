@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="1.5.7"
+VERSION="1.5.8"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 ISSUE_URL="https://github.com/munisisazade/create-django-app/issues"
@@ -170,7 +170,7 @@ function base_script {
 		echo -e "Swich virtualenviroment"
 		source .venv/bin/activate
 		echo -e "Installing Django and Pillow with pip library"
-		pip install django pillow gunicorn uwsgi psycopg2
+		pip install django pillow gunicorn uwsgi psycopg2 django-ckeditor django-widget-tweaks
 		if [[ -v OSCAR_APP ]];then
 		echo "(ChangeColor green text)Installing Oscar app ...$(ChangeColor white text)"
 		pip install django-oscar django-modeltranslation django-ckeditor
@@ -267,6 +267,8 @@ function docker_container {
 	docker_file
 	echo -e "Creating docker_compose... $(ChangeColor green text)OK$(ChangeColor white text)"
 	docker_compose
+	echo -e "Creating celery_dockerfile...  $(ChangeColor green text)OK$(ChangeColor white text)"
+	celery_dockerfile
 	echo -e "Creating uwsgi_ini...  $(ChangeColor green text)OK$(ChangeColor white text)"
 	uwsgi_ini
 }
@@ -472,6 +474,34 @@ function docker_compose {
 		echo "      - LC_ALL=C.UTF-8" >> docker-compose.yml
 		echo "" >> docker-compose.yml
 		echo "" >> docker-compose.yml
+		echo "# redis:" >> docker-compose.yml
+    	echo "#   image: redis:latest" >> docker-compose.yml
+    	echo "#   restart: \"on-failure\"" >> docker-compose.yml
+    	echo "#   container_name: redis" >> docker-compose.yml
+    	echo "#   ports:" >> docker-compose.yml
+     	echo "#     - 6379:6379" >> docker-compose.yml
+    	echo "#   volumes:" >> docker-compose.yml
+      	echo "#     - ./redisdb:/var/lib/redis" >> docker-compose.yml
+      	echo "" >> docker-compose.yml
+      	echo "" >> docker-compose.yml
+  		echo "# celery:" >> docker-compose.yml
+    	echo "#   restart: \"always\"" >> docker-compose.yml
+    	echo "#   build:" >> docker-compose.yml
+      	echo "#   context: ." >> docker-compose.yml
+      	echo "#   dockerfile: celery.dockerfile" >> docker-compose.yml
+    	echo "#   container_name: celery" >> docker-compose.yml
+    	echo "#   env_file: .env" >> docker-compose.yml
+    	echo "#   command: celery --app=$PROJ_NAME.celery:app worker -B --loglevel=INFO" >> docker-compose.yml
+    	echo "#   volumes:" >> docker-compose.yml
+      	echo "#     - .:/src" >> docker-compose.yml
+    	echo "#   links:" >> docker-compose.yml
+      	echo "#     - redis" >> docker-compose.yml
+      	echo "#     - postgres" >> docker-compose.yml
+    	echo "#   depends_on:" >> docker-compose.yml
+      	echo "#     - \"redis\"" >> docker-compose.yml
+      	echo "#     - \"postgres\"" >> docker-compose.yml
+      	echo "" >> docker-compose.yml
+      	echo "" >> docker-compose.yml
 	fi
 	echo "  web:" >> docker-compose.yml
 	echo "    container_name: $PROJ_NAME" >> docker-compose.yml
@@ -500,6 +530,36 @@ function docker_compose {
 		echo "    depends_on:" >> docker-compose.yml
 		echo "      - \"postgres\"" >> docker-compose.yml
 	fi
+	echo "# networks:" >> docker-compose.yml
+  	echo "#   default:" >> docker-compose.yml
+    echo "#     external:" >> docker-compose.yml
+    echo "#       name: nginx-proxy" >> docker-compose.yml
+}
+
+function celery_dockerfile {
+	touch celery.dockerfile
+	echo "FROM python:latest" >> celery.dockerfile
+	echo "ENV PYTHONUNBUFFERED 1" >> celery.dockerfile
+	echo "" >> celery.dockerfile
+	echo "#ENV C_FORCE_ROOT true" >> celery.dockerfile
+	echo "" >> celery.dockerfile
+	echo "ENV APP_USER myapp" >> celery.dockerfile
+	echo "ENV APP_ROOT /src" >> celery.dockerfile
+	echo "RUN mkdir /src;" >> celery.dockerfile
+	echo "RUN groupadd -r ${APP_USER} \\" >> celery.dockerfile
+	echo "    && useradd -r -m \\" >> celery.dockerfile
+	echo "    --home-dir ${APP_ROOT} \\" >> celery.dockerfile
+	echo "    -s /usr/sbin/nologin \\" >> celery.dockerfile
+	echo "    -g ${APP_USER} ${APP_USER}" >> celery.dockerfile
+	echo "" >> celery.dockerfile
+	echo "WORKDIR ${APP_ROOT}" >> celery.dockerfile
+	echo "" >> celery.dockerfile
+	echo "RUN mkdir /config" >> celery.dockerfile
+	echo "ADD requirements.txt /config/" >> celery.dockerfile
+	echo "RUN pip install --no-cache-dir -r /config/requirements.txt" >> celery.dockerfile
+	echo "" >> celery.dockerfile
+	echo "USER ${APP_USER}" >> celery.dockerfile
+	echo "ADD . ${APP_ROOT}" >> celery.dockerfile
 }
 
 function uwsgi_ini {
@@ -536,7 +596,7 @@ function uwsgi_ini {
 function oscar_configuration {
 	echo -e "Get Django application SECRET_KEY"
 	SECRET_KEY=$(python manage.py diffsettings | grep 'SECRET_KEY' | cut -d' ' -f 3)
-	DJANGO_UP_APP_NAME=$(tr '[:lower:]' '[:upper:]' <<< ${APP_NAME:0:1})${APP_NAME:1}
+	DJANGO_UP_APP_NAME=$(python3 -c 'a="'$APP_NAME'";d=[x.capitalize() for x in a.split("_")];print("".join(d))')
 	echo -e "configuration files add"
 	cp -r ~/.local/share/django_app/middleware/ $PROJ_NAME/
 	cp -r ~/.local/share/django_app/settings.py $PROJ_NAME/
@@ -562,7 +622,7 @@ function oscar_configuration {
 function django_2_configuration {
 	echo -e "Get Django application SECRET_KEY"
 	SECRET_KEY=$(python manage.py diffsettings | grep 'SECRET_KEY' | cut -d' ' -f 3)
-	DJANGO_UP_APP_NAME=$(tr '[:lower:]' '[:upper:]' <<< ${APP_NAME:0:1})${APP_NAME:1}
+	DJANGO_UP_APP_NAME=$(python3 -c 'a="'$APP_NAME'";d=[x.capitalize() for x in a.split("_")];print("".join(d))')
 	echo -e "configuration files add"
 	cp -r ~/.local/share/django_app/middleware/ $PROJ_NAME/
 	cp -r ~/.local/share/django_app/settings_django2.py $PROJ_NAME/settings.py
