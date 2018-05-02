@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="1.5.8"
+VERSION="1.5.9"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 ISSUE_URL="https://github.com/munisisazade/create-django-app/issues"
@@ -546,20 +546,20 @@ function celery_dockerfile {
 	echo "ENV APP_USER myapp" >> celery.dockerfile
 	echo "ENV APP_ROOT /src" >> celery.dockerfile
 	echo "RUN mkdir /src;" >> celery.dockerfile
-	echo "RUN groupadd -r ${APP_USER} \\" >> celery.dockerfile
+	echo "RUN groupadd -r \${APP_USER} \\" >> celery.dockerfile
 	echo "    && useradd -r -m \\" >> celery.dockerfile
-	echo "    --home-dir ${APP_ROOT} \\" >> celery.dockerfile
+	echo "    --home-dir \${APP_ROOT} \\" >> celery.dockerfile
 	echo "    -s /usr/sbin/nologin \\" >> celery.dockerfile
-	echo "    -g ${APP_USER} ${APP_USER}" >> celery.dockerfile
+	echo "    -g \${APP_USER} \${APP_USER}" >> celery.dockerfile
 	echo "" >> celery.dockerfile
-	echo "WORKDIR ${APP_ROOT}" >> celery.dockerfile
+	echo "WORKDIR \${APP_ROOT}" >> celery.dockerfile
 	echo "" >> celery.dockerfile
 	echo "RUN mkdir /config" >> celery.dockerfile
 	echo "ADD requirements.txt /config/" >> celery.dockerfile
 	echo "RUN pip install --no-cache-dir -r /config/requirements.txt" >> celery.dockerfile
 	echo "" >> celery.dockerfile
-	echo "USER ${APP_USER}" >> celery.dockerfile
-	echo "ADD . ${APP_ROOT}" >> celery.dockerfile
+	echo "USER \${APP_USER}" >> celery.dockerfile
+	echo "ADD . \${APP_ROOT}" >> celery.dockerfile
 }
 
 function uwsgi_ini {
