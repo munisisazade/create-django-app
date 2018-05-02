@@ -241,7 +241,6 @@ function base_script {
 
 # Check webhook tool updates
 function weebhook {
-    RETURN_BASE=$ROOT_DIRECTION/$FILE
     cd $GIT_DIRECTORY
     WEBHOOK=$(git status)
     if [[ $WEBHOOK = *"git pull"* ]]; then
@@ -258,7 +257,7 @@ function weebhook {
     else
         echo -e " "
     fi
-    cd $RETURN_BASE
+    cd $ROOT_DIRECTION
 }
 
 function progress30 {
