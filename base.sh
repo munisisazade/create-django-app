@@ -153,7 +153,10 @@ function base_script {
 	   echo -e "$(ChangeColor white text)Either try using a new directory name, or remove the files listed above"
 	   exit 1
 	else
-
+	    if [[ $FILE = *"-"* ]]; then
+                helping
+                exit 1
+            fi
 	    echo "Creating File ... $NOT_POSGRES $OSCAR_APP $ALPHINE_LINUX"
 	    sleep 3
 	    mkdir $FILE
