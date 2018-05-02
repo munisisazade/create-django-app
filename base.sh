@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="1.6.0"
+VERSION="1.6.1"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 ISSUE_URL="https://github.com/munisisazade/create-django-app/issues"
@@ -681,6 +681,9 @@ function django_2_configuration {
 	cp -r ~/.local/share/django_app/app/signals.py $APP_NAME/
 	cp -r ~/.local/share/django_app/app/tasks.py $APP_NAME/
 	cp -r ~/.local/share/django_app/app/urls.py $APP_NAME/
+    cp -r ~/.local/share/django_app/README.md $FILE/
+    sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{DOCKER_PORT}|'$DOCKER_PORT'|g' $FILE/README.md
+	echo -e "Readme change."
 	echo -e "settings.py changed."
 	sed -i -e 's|#{SECRET_KEY}|'$SECRET_KEY'|g' -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' -e 's|#{DJANGO_UP_APP_NAME}|'$DJANGO_UP_APP_NAME'|'g $PROJ_NAME/settings.py
 	echo -e "Urls py changed"
