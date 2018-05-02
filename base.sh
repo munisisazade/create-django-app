@@ -1,8 +1,9 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="1.6.1"
+VERSION="1.6.2"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
+GIT_DIRECTORY=~/.create-django-app/
 ISSUE_URL="https://github.com/munisisazade/create-django-app/issues"
 PACKAGE_CHANGE="#pkg-resources"
 
@@ -73,6 +74,7 @@ function helping {
   	echo -e "  -h, --help                               output usage information"
   	echo -e "  -a, --author                             about author information"
   	echo -e "  -g, git                                  add git repository to current project"
+  	echo -e "  -u, --update, -U                         update package new version"
   	echo -e "  --alphine                                create project small docker container with linux Alphine"
   	echo -e "  --no-posgres                             create project without Postgres database only Sqlite3"
   	echo -e "  --oscar-app                             	create project django-oscar ecommerce"
@@ -154,12 +156,13 @@ function base_script {
 	   exit 1
 	else
 	    if [[ $FILE = *"-"* ]]; then
-                helping
-                exit 1
-            fi
+            helping
+            exit 1
+        fi
+        weebhook
 	    echo "Creating File ... $NOT_POSGRES $OSCAR_APP $ALPHINE_LINUX"
 	    sleep 3
-	    mkdir $FILE
+	    mkdir $ROOT_DIRECTION/$FILE
 	    echo -e "Get into $FILE"
 	    cd $FILE
 	    echo -e "First create virtual enviroment"
@@ -234,6 +237,28 @@ function base_script {
 		ask_git
 		finish
 	fi
+}
+
+# Check webhook tool updates
+function weebhook {
+    RETURN_BASE=$ROOT_DIRECTION/$FILE
+    cd $GIT_DIRECTORY
+    WEBHOOK=$(git status)
+    if [[ $WEBHOOK = *"git pull"* ]]; then
+        webhook_message=$(curl https://raw.githubusercontent.com/munisisazade/create-django-app/master/message.txt)
+        echo -e "Opps This tool might be update"
+        echo -e "$(ChangeColor green text)$webhook_message $(ChangeColor white text)"
+        exit 1
+#        read -p "Do you want to update create-django-app(y,n)?" update_status
+#		if [ "$update_status" == y ] ; then
+#		    echo -e "If you want to update package"
+#		    read -p "Package name or names: " packages_list
+#		    pip install $packages_list
+#		fi
+    else
+        echo -e " "
+    fi
+    cd $RETURN_BASE
 }
 
 function progress30 {
@@ -724,6 +749,18 @@ function ask_git {
 	fi
 }
 
+function update_package {
+    read -p "Do you want to update create-django-app tool(y,n)?" updates
+	if [ "updates" == y ] ; then
+	    echo -e "Starting to update tool"
+	    cd $GIT_DIRECTORY
+	    git pull origin master
+	    python3 install.py update
+	else
+	    exit 1
+	fi
+}
+
 
 function finish {
 	echo -e "\n"
@@ -804,6 +841,10 @@ case ${COMMAND} in
 	git | --git)
 		ask_git
 		finish
+	;;
+
+	-u | --update | -U )
+	    update_package
 	;;
 
     -h | --help)
