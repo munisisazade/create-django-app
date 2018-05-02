@@ -140,6 +140,6 @@ else
     echo -e "$(ChangeColor blue text)  create-django-app $(ChangeColor green text)my-django-app$(ChangeColor white text)"
     echo -e "\n"
     echo -e "Run $(ChangeColor blue text)create-django-app --help$(ChangeColor white text) to see all options."
-
+fi
 
 exit 1
