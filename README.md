@@ -4,12 +4,10 @@
 ### --- Installation command ###
 
 First check this bellow command:
+One line download script copy paste your terminal
 ```
 #!
-
-$ git clone https://github.com/munisisazade/create-django-app.git
-$ cd create-django-app
-$ python install.py
+$ git clone https://github.com/munisisazade/create-django-app.git && cd create-django-app/ && python3 install.py && cd .. && rm -rf create-django-app/
 ```
 
 ### --- Set up synced folders ###
