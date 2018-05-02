@@ -1,11 +1,1 @@
-Hi new version relase 1.6.2
-
-Fix automaticly update
-
-Fix some errors
-
-Just a testing man
-
-Return root direction
-
-Thanks for using my tool !
+New version relase 1.6.3
