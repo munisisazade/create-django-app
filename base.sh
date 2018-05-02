@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="1.5.9"
+VERSION="1.6.0"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 ISSUE_URL="https://github.com/munisisazade/create-django-app/issues"
@@ -73,6 +73,9 @@ function helping {
   	echo -e "  -h, --help                               output usage information"
   	echo -e "  -a, --author                             about author information"
   	echo -e "  -g, git                                  add git repository to current project"
+  	echo -e "  --alphine                                create project small docker container with linux Alphine"
+  	echo -e "  --no-posgres                             create project without Postgres database only Sqlite3"
+  	echo -e "  --oscar-app                             	create project django-oscar ecommerce"
   	echo -e "  Only $(ChangeColor green text)<project-directory>$(ChangeColor white text) is required."
   	echo -e "\n"
   	echo -e "  If you have any problems, do not hesitate to file an issue:"
@@ -136,7 +139,9 @@ function base_script {
 			--oscar-app )
 				OSCAR_APP="with Oscar app"
 			;;
-
+            --alphine )
+                ALPHINE_LINUX="with small project"
+            ;;
 			
 		esac		
 	fi
@@ -149,7 +154,7 @@ function base_script {
 	   exit 1
 	else
 
-	    echo "Creating File ... $NOT_POSGRES $OSCAR_APP"
+	    echo "Creating File ... $NOT_POSGRES $OSCAR_APP $ALPHINE_LINUX"
 	    sleep 3
 	    mkdir $FILE
 	    echo -e "Get into $FILE"
@@ -264,7 +269,11 @@ function docker_container {
 	echo -e "Creating mime_types...  $(ChangeColor green text)OK$(ChangeColor white text)"
 	mime_types
 	echo -e "Creating docker_file...  $(ChangeColor green text)OK$(ChangeColor white text)"
-	docker_file
+	if [[ -v ALPHINE_LINUX ]];then
+	    docker_alphine_linux
+	else
+	    docker_file
+	fi
 	echo -e "Creating docker_compose... $(ChangeColor green text)OK$(ChangeColor white text)"
 	docker_compose
 	echo -e "Creating celery_dockerfile...  $(ChangeColor green text)OK$(ChangeColor white text)"
@@ -389,6 +398,45 @@ function mime_types {
 }
 
 function docker_file {
+	touch Dockerfile
+	echo "FROM python:3.5" >> Dockerfile
+	echo "" >> Dockerfile
+	echo "# Ensure that Python outputs everything that's printed inside" >> Dockerfile
+	echo "# the application rather than buffering it." >> Dockerfile
+	echo "ENV PYTHONUNBUFFERED 1" >> Dockerfile
+	echo "ENV APP_ROOT /code" >> Dockerfile
+	echo "" >> Dockerfile
+	echo "# Copy in your requirements file" >> Dockerfile
+	echo "ADD requirements.txt /requirements.txt" >> Dockerfile
+	echo "" >> Dockerfile
+	echo "# Install build deps, then run \`pip install\`, then remove unneeded build deps all in a single step. Correct the path to your production requirements file, if needed." >> Dockerfile
+	echo "RUN pip install virtualenvwrapper" >> Dockerfile
+	echo "RUN python3 -m venv /venv" >> Dockerfile
+	echo "RUN /venv/bin/pip install -U pip" >> Dockerfile
+	echo "RUN /venv/bin/pip install --no-cache-dir -r /requirements.txt" >> Dockerfile
+	echo "" >> Dockerfile
+	echo "# Copy your application code to the container (make sure you create a .dockerignore file if any large files or directories should be excluded)" >> Dockerfile
+	echo "RUN mkdir \${APP_ROOT}" >> Dockerfile
+	echo "WORKDIR \${APP_ROOT}" >> Dockerfile
+	echo "ADD . \${APP_ROOT}" >> Dockerfile
+	echo "COPY mime.types /etc/mime.types" >> Dockerfile
+	echo "" >> Dockerfile
+	echo "# uWSGI will listen on this port" >> Dockerfile
+	read -p "Which port do you want to use(choose range 8000~8999)?" DOCKER_PORT
+	if [ "$DOCKER_PORT" == '' ] ; then
+	    DOCKER_PORT=8050
+	fi
+	echo "EXPOSE $DOCKER_PORT" >> Dockerfile
+	echo "" >> Dockerfile
+	echo "# Call collectstatic (customize the following line with the minimal environment variables needed for manage.py to run):" >> Dockerfile
+	echo "RUN if [ -f manage.py ]; then /venv/bin/python manage.py collectstatic --noinput; fi" >> Dockerfile
+	echo "" >> Dockerfile
+	echo "# Start uWSGI" >> Dockerfile
+	echo "CMD [ \"/venv/bin/uwsgi\", \"--ini\", \"/code/uwsgi.ini\"]" >> Dockerfile
+}
+
+
+function docker_alphine_linux {
 	touch Dockerfile
 	echo "FROM python:3.5-alpine" >> Dockerfile
 	echo "" >> Dockerfile
