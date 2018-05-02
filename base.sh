@@ -242,6 +242,7 @@ function base_script {
 # Check webhook tool updates
 function weebhook {
     cd $GIT_DIRECTORY
+    GIT_FETCH=$(git fetch)
     WEBHOOK=$(git status)
     if [[ $WEBHOOK = *"git pull"* ]]; then
         webhook_message=$(curl https://raw.githubusercontent.com/munisisazade/create-django-app/master/message.txt)
