@@ -750,7 +750,7 @@ function ask_git {
 
 function update_package {
     read -p "Do you want to update create-django-app tool(y,n)?" updates
-	if [ "updates" == y ] ; then
+	if [ "$updates" == y ] ; then
 	    echo -e "Starting to update tool"
 	    cd $GIT_DIRECTORY
 	    git pull origin master
