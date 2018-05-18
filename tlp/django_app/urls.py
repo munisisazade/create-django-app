@@ -31,7 +31,7 @@ urlpatterns += i18n_patterns(
     url(r'^page/', include('django.contrib.flatpages.urls')),
 )
 
-# in development django built-in server serves static and media content
+# in development django built-in server serves static and media content 
 if not settings.PROD:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
