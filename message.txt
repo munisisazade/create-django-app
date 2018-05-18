@@ -1,1 +1,2 @@
-New version relase all user 1.6.4
+Bug fix #432323 new version relase 1.6.5
+Static version Development server ready*
