@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="1.6.2"
+VERSION="1.6.4"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 GIT_DIRECTORY=~/.create-django-app/
@@ -241,8 +241,8 @@ function base_script {
 
 # Check webhook tool updates
 function weebhook {
-    RETURN_BASE=$ROOT_DIRECTION/$FILE
     cd $GIT_DIRECTORY
+    GIT_FETCH=$(git fetch)
     WEBHOOK=$(git status)
     if [[ $WEBHOOK = *"git pull"* ]]; then
         webhook_message=$(curl https://raw.githubusercontent.com/munisisazade/create-django-app/master/message.txt)
@@ -258,7 +258,7 @@ function weebhook {
     else
         echo -e " "
     fi
-    cd $RETURN_BASE
+    cd $ROOT_DIRECTION
 }
 
 function progress30 {
@@ -751,7 +751,7 @@ function ask_git {
 
 function update_package {
     read -p "Do you want to update create-django-app tool(y,n)?" updates
-	if [ "updates" == y ] ; then
+	if [ "$updates" == y ] ; then
 	    echo -e "Starting to update tool"
 	    cd $GIT_DIRECTORY
 	    git pull origin master

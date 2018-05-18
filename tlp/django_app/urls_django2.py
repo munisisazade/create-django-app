@@ -39,7 +39,10 @@ urlpatterns = [
 
 # handler404 = 'game.views.NotFoundPage.as_view'
 
-
+# in development django built-in server serves static and media content
+if not settings.PROD:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # This is change default admin panel Headers and titles
 admin.site.site_header = '#{PROJ_NAME} Admin'
 admin.site.site_title = '#{PROJ_NAME} Administration'

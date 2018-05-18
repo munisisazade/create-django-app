@@ -104,6 +104,7 @@ else
     git remote add origin $GIR_REPO_URL
     git fetch origin
     git reset --hard origin/master
+    git branch --set-upstream-to origin/master
     echo -e "$(ChangeColor green text)"
     echo -ne '##                    (0%)\r'
     sleep 0.5
