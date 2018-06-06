@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="1.6.5"
+VERSION="1.6.6"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 GIT_DIRECTORY=~/.create-django-app/
