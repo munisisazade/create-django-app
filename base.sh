@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="1.6.6"
+VERSION="1.6.7"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 GIT_DIRECTORY=~/.create-django-app/
@@ -78,6 +78,7 @@ function helping {
   	echo -e "  --alphine                                create project small docker container with linux Alphine"
   	echo -e "  --no-posgres                             create project without Postgres database only Sqlite3"
   	echo -e "  --oscar-app                             	create project django-oscar ecommerce"
+  	echo -e "  --django-downgrade                       create project django==1.11.9 version"
   	echo -e "  Only $(ChangeColor green text)<project-directory>$(ChangeColor white text) is required."
   	echo -e "\n"
   	echo -e "  If you have any problems, do not hesitate to file an issue:"
@@ -140,6 +141,10 @@ function base_script {
 
 			--oscar-app )
 				OSCAR_APP="with Oscar app"
+			;;
+
+			--django-downgrade ) 
+				DJANGO_VERSİON="download with 1.11.9 version django"
 			;;
             --alphine )
                 ALPHINE_LINUX="with small project"
@@ -820,6 +825,10 @@ function unit_test {
 	fi
 }
 
+function just_test {
+	echo "Test $1 $2"
+}
+
 ################
 #### START  ####
 ################
@@ -847,6 +856,7 @@ case ${COMMAND} in
 	    update_package
 	;;
 
+
     -h | --help)
 
 		helping
@@ -856,6 +866,9 @@ case ${COMMAND} in
 
 		unit_test
 
+	;;
+	-j * )
+		just_test
 	;;
 
 
