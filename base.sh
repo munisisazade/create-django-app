@@ -825,9 +825,6 @@ function unit_test {
 	fi
 }
 
-function just_test {
-	echo "Test $1 $2"
-}
 
 ################
 #### START  ####
@@ -866,9 +863,6 @@ case ${COMMAND} in
 
 		unit_test
 
-	;;
-	-j * )
-		just_test
 	;;
 
 
