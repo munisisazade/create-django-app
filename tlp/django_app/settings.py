@@ -42,6 +42,8 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # LOCALE_PATHS = (
 #     os.path.join(BASE_DIR, 'locale'),
 # )
+# If you have a custom user uncommend
+AUTH_USER_MODEL = "base_user.MyUser"
 
 # Default login required
 # LOGIN_URL = '/accounts/login/'
@@ -65,7 +67,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'ckeditor_uploader',
     'widget_tweaks',
-    # 'base_user.apps.BaseUserConfig',
+    'base_user.apps.BaseUserConfig',
     # 'api.apps.ApiConfig',
     '#{APP_NAME}.apps.#{DJANGO_UP_APP_NAME}Config',
 ]

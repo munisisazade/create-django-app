@@ -237,7 +237,7 @@ function base_script {
 		read -p "Django app name : " APP_NAME
 		python manage.py startapp $APP_NAME
 		echo -e "Creating Database .."
-		python manage.py migrate
+		# python manage.py migrate
 		echo "STATIC_ROOT='static'" >> $PROJ_NAME/settings.py
 		progress30
 		docker_container
@@ -279,28 +279,29 @@ function weebhook {
     cd $ROOT_DIRECTION
 }
 
+
 function progress30 {
-	echo -ne '                    (0%)\r'
+	echo -ne '$(ChangeColor red text)                    (0%)\r'
 	sleep 0.5
-	echo -ne '##                  (10%)\r'
+	echo -ne '$(ChangeColor orange text)##                  (10%)\r'
 	sleep 0.5
-	echo -ne '####                (20%)\r'
+	echo -ne '$(ChangeColor blue text)####                (20%)\r'
 	sleep 0.5
-	echo -ne '######              (30%)\r'
+	echo -ne '$(ChangeColor green text)######              (30%)\r'
 	sleep 0.5
-	echo -ne '########            (40%)\r'
+	echo -ne '$(ChangeColor black text)########            (40%)\r'
 	sleep 0.5
-	echo -ne '##########          (50%)\r'
+	echo -ne '$(ChangeColor white text)##########          (50%)\r'
 	sleep 0.5
-	echo -ne '############        (60%)\r'
+	echo -ne '$(ChangeColor magenta text)############        (60%)\r'
 	sleep 0.5
-	echo -ne '##############      (70%)\r'
+	echo -ne '$(ChangeColor cyan text)##############      (70%)\r'
 	sleep 0.5
-	echo -ne '################    (80%)\r'
+	echo -ne '$(ChangeColor red text)################    (80%)\r'
 	sleep 0.5
-	echo -ne '##################  (90%)\r'
+	echo -ne '$(ChangeColor orange text)##################  (90%)\r'
 	sleep 0.5
-	echo -ne '####################(100%)\r'
+	echo -ne '$(ChangeColor white text)####################(100%)\r'
 	echo -ne '\n'
 }
 
@@ -746,6 +747,7 @@ function django_stable_configuration {
 	sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' $PROJ_NAME/celery.py
 	sed -i -e 's|#{PROJ_NAME}|'$DJANGO_UP_PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' $PROJ_NAME/urls.py
 	sed -i -e 's|#{APP_NAME}|'$APP_NAME'|g' $APP_NAME/management/commands/ovveride_templates.py
+	python manage.py makemigrations
 	python manage.py migrate
 	echo -e "Successfuly done [OK]"
 
