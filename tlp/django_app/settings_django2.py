@@ -224,6 +224,16 @@ if PROD:  # For production docker use
         }
     }
 else:  # For localhost development
+    # DATABASES = {
+    #     'default': {
+    #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #         'NAME': '#{POSGRES_DB_NAME}',
+    #         'USER': '#{POSGRES_DB_USER}',
+    #         'PASSWORD': '#{POSGRES_DB_PASSWORD}',
+    #         'HOST': 'localhost',
+    #         'PORT': '5432',
+    #     }
+    # }
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
