@@ -279,29 +279,28 @@ function weebhook {
     cd $ROOT_DIRECTION
 }
 
-
 function progress30 {
-	echo -ne '$(ChangeColor red text)                    (0%)\r'
+	echo -ne '                    (0%)\r'
 	sleep 0.5
-	echo -ne '$(ChangeColor orange text)##                  (10%)\r'
+	echo -ne '##                  (10%)\r'
 	sleep 0.5
-	echo -ne '$(ChangeColor blue text)####                (20%)\r'
+	echo -ne '####                (20%)\r'
 	sleep 0.5
-	echo -ne '$(ChangeColor green text)######              (30%)\r'
+	echo -ne '######              (30%)\r'
 	sleep 0.5
-	echo -ne '$(ChangeColor black text)########            (40%)\r'
+	echo -ne '########            (40%)\r'
 	sleep 0.5
-	echo -ne '$(ChangeColor white text)##########          (50%)\r'
+	echo -ne '##########          (50%)\r'
 	sleep 0.5
-	echo -ne '$(ChangeColor magenta text)############        (60%)\r'
+	echo -ne '############        (60%)\r'
 	sleep 0.5
-	echo -ne '$(ChangeColor cyan text)##############      (70%)\r'
+	echo -ne '##############      (70%)\r'
 	sleep 0.5
-	echo -ne '$(ChangeColor red text)################    (80%)\r'
+	echo -ne '################    (80%)\r'
 	sleep 0.5
-	echo -ne '$(ChangeColor orange text)##################  (90%)\r'
+	echo -ne '##################  (90%)\r'
 	sleep 0.5
-	echo -ne '$(ChangeColor white text)####################(100%)\r'
+	echo -ne '####################(100%)\r'
 	echo -ne '\n'
 }
 
