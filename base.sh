@@ -721,27 +721,27 @@ function django_stable_configuration {
 	DJANGO_UP_APP_NAME=$(python3 -c 'a="'$APP_NAME'";d=[x.capitalize() for x in a.split("_")];print("".join(d))')
 	DJANGO_UP_PROJ_NAME=$(python3 -c 'a="'$PROJ_NAME'";d=[x.capitalize() for x in a.split("_")];print("".join(d))')
 	echo -e "configuration files add"
-	mkdir $FILE/localhost
+	mkdir localhost
 	cp -r ~/.local/share/django_app/middleware/ $PROJ_NAME/
 	cp -r ~/.local/share/django_app/settings.py $PROJ_NAME/settings.py
 	cp -r ~/.local/share/django_app/urls.py $PROJ_NAME/urls.py
 	cp -r ~/.local/share/django_app/__init__.py $PROJ_NAME/__init__.py
 	cp -r ~/.local/share/django_app/celery.py $PROJ_NAME/celery.py
-	cp -r ~/.local/share/django_app/docker-compose.yml $FILE/localhost/
-	cp -r ~/.local/share/django_app/base_user/ $FILE/
+	cp -r ~/.local/share/django_app/docker-compose.yml localhost/
+	cp -r ~/.local/share/django_app/base_user/ ../$FILE/
 	cp -r ~/.local/share/django_app/app/management/ $APP_NAME/
 	cp -r ~/.local/share/django_app/app/options/ $APP_NAME/
 	cp -r ~/.local/share/django_app/app/forms.py $APP_NAME/
 	cp -r ~/.local/share/django_app/app/signals.py $APP_NAME/
 	cp -r ~/.local/share/django_app/app/tasks.py $APP_NAME/
 	cp -r ~/.local/share/django_app/app/urls.py $APP_NAME/
-    cp -r ~/.local/share/django_app/README.md $FILE/
+    cp -r ~/.local/share/django_app/README.md ../$FILE/
     sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{DOCKER_PORT}|'$DOCKER_PORT'|g' $FILE/README.md
 	echo -e "Readme change."
 	echo -e "settings.py changed."
 	sed -i -e 's|#{SECRET_KEY}|'$SECRET_KEY'|g' -e 's|#{POSGRES_DB_NAME}|'$POSGRES_DB_NAME'|g' -e 's|#{POSGRES_DB_PASSWORD}|'$POSGRES_DB_PASSWORD'|g' -e 's|#{POSGRES_DB_USER}|'$POSGRES_DB_USER'|g' -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' -e 's|#{DJANGO_UP_APP_NAME}|'$DJANGO_UP_APP_NAME'|'g $PROJ_NAME/settings.py
 	echo -e "Urls py changed"
-	sed -i -e 's|#{ROOT}|'$(pwd/$FILE)'|g' $FILE/localhost/docker-compose.yml
+	sed -i -e 's|#{ROOT}|'$ROOT_DIRECTION/$FILE'|g' $FILE/localhost/docker-compose.yml
 	echo -e "celery configuration"
 	sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' $PROJ_NAME/celery.py
 	sed -i -e 's|#{PROJ_NAME}|'$DJANGO_UP_PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' $PROJ_NAME/urls.py
