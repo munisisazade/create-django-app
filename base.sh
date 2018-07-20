@@ -717,25 +717,25 @@ function oscar_configuration {
 # Django stable configuration
 function django_stable_configuration {
 	echo -e "Get Django application SECRET_KEY"
-	SECRET_KEY=$(python3 -c "import random;print(''.join([random.SystemRandom().choice('abcdefghijklmnopqrstuvwxyz0123456789\!@#$%^&*(-_=+)') for i in range(50)]))")
+	SECRET_KEY="$(python3 -c "import random;print(''.join([random.SystemRandom().choice('abcdefghijklmnopqrstuvwxyz0123456789\!@#$%^&*(-_=+)') for i in range(50)]))")"
 	DJANGO_UP_APP_NAME=$(python3 -c 'a="'$APP_NAME'";d=[x.capitalize() for x in a.split("_")];print("".join(d))')
 	DJANGO_UP_PROJ_NAME=$(python3 -c 'a="'$PROJ_NAME'";d=[x.capitalize() for x in a.split("_")];print("".join(d))')
 	echo -e "configuration files add"
-	mkdir $FILE/localhost
+	mkdir localhost
 	cp -r ~/.local/share/django_app/middleware/ $PROJ_NAME/
 	cp -r ~/.local/share/django_app/settings.py $PROJ_NAME/settings.py
 	cp -r ~/.local/share/django_app/urls.py $PROJ_NAME/urls.py
 	cp -r ~/.local/share/django_app/__init__.py $PROJ_NAME/__init__.py
 	cp -r ~/.local/share/django_app/celery.py $PROJ_NAME/celery.py
-	cp -r ~/.local/share/django_app/docker-compose.yml $FILE/localhost/
-	cp -r ~/.local/share/django_app/base_user/ $FILE/
+	cp -r ~/.local/share/django_app/docker-compose.yml localhost/
+	cp -r ~/.local/share/django_app/base_user/ ../$FILE
 	cp -r ~/.local/share/django_app/app/management/ $APP_NAME/
 	cp -r ~/.local/share/django_app/app/options/ $APP_NAME/
 	cp -r ~/.local/share/django_app/app/forms.py $APP_NAME/
 	cp -r ~/.local/share/django_app/app/signals.py $APP_NAME/
 	cp -r ~/.local/share/django_app/app/tasks.py $APP_NAME/
 	cp -r ~/.local/share/django_app/app/urls.py $APP_NAME/
-    cp -r ~/.local/share/django_app/README.md $FILE/
+    cp -r ~/.local/share/django_app/README.md ../$FILE
     sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{DOCKER_PORT}|'$DOCKER_PORT'|g' $FILE/README.md
 	echo -e "Readme change."
 	echo -e "settings.py changed."
