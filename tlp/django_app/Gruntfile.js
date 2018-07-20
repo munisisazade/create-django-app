@@ -3,7 +3,7 @@ module.exports = function(grunt) {
     // Configurable paths for the application
     var appConfig = {
             app: 'dev',
-            dist: '../static/#{STATIC_ROOT}',
+            dist: '../../static/#{STATIC_ROOT}',
             hlp: {
                 bowerPath: './bower_components',
                 bowerJS: [
