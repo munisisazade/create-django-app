@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="2.0.0"
+VERSION="2.0.1"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 GIT_DIRECTORY=~/.create-django-app/
@@ -74,6 +74,7 @@ function helping {
   	echo -e "  -h, --help                               output usage information"
   	echo -e "  -a, --author                             about author information"
   	echo -e "  -g, git                                  add git repository to current project"
+  	echo -e "  -f, --frontend                           Add _frontend file to root directory"
   	echo -e "  -u, --update, -U                         update package new version"
   	echo -e "  --alphine                                create project small docker container with linux Alphine"
   	echo -e "  --no-posgres                             create project without Postgres database only Sqlite3"
@@ -869,6 +870,56 @@ function test_elemek {
 	
 }
 
+
+function error_message() {
+	echo -e "$(ChangeColor red text)$1$(ChangeColor white text)"
+}
+
+function success_message() {
+	echo -e "$(ChangeColor green text)$1$(ChangeColor white text)"
+}
+
+# Add frontend technolgy
+function add_frontend {
+	echo -e "Frontend boilerplate backend integration ..."
+	read -p "Frontend directory: " frontend_directory
+	read -p "Backend directory: " backend_directory
+	if [ -z $frontend_directory ] ; then
+		error_message "plase write frontend directory"
+	    exit 125
+	fi
+	if [ -z $backend_directory ] ; then
+	    error_message "plase write backend directory"
+	    exit 125
+	fi
+	if [[ (-e $frontend_directory) && (-e $backend_directory) ]]; then
+		echo -e "Create backend frontend directory"
+		if [ -e $backend_directory/_frontend ]; then
+			error_message "already exist frontend file"
+		else
+			mkdir $backend_directory/_frontend
+			echo -e "Copy all frontend files to backend directory"
+			cp -r $frontend_directory/* $backend_directory/_frontend/
+			echo -e "Copy ready."
+			cd $backend_directory/_frontend/
+			# qayitbura
+			echo "dev/node_modules/" >> .gitignore
+			echo "dev/bower_components/" >> .gitignore
+			echo "dev/.sass-cache/" >> .gitignore
+			LICENSE_NAME="$(date +%Y), Munis Isazade"
+			read -p "static file name: " static_name
+			cp -r ~/.local/share/django_app/Gruntfile.js dev/
+			cp -r ~/.local/share/django_app/LICENSE ../_frontend/
+			sed -i -e 's|#{STATIC_ROOT}|'$static_name'|g' dev/Gruntfile.js
+			cd dev/
+			npm run prep
+			success_message "Successfuly done !"
+		fi
+	else
+		echo "Not directory "
+	fi
+}
+
 function unit_test {
 	echo -e "Test starting...$(ChangeColor red text)"
 	munis
@@ -912,6 +963,9 @@ case ${COMMAND} in
 
 		helping
 
+	;;
+	-f | --frontend )
+		add_frontend
 	;;
 	-t | --test)
 
