@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="1.6.7"
+VERSION="2.0.0"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 GIT_DIRECTORY=~/.create-django-app/
@@ -65,7 +65,7 @@ function usage {
 
 function helping {
 	echo -e "\n"
-	echo -e " Usage: create-react-app $(ChangeColor green text)<project-directory>$(ChangeColor white text) [options]"
+	echo -e " Usage: create-django-app $(ChangeColor green text)<project-directory>$(ChangeColor white text) [options]"
   	echo -e "\n"
   	echo -e " Options:"
   	echo -e "\n"
@@ -89,7 +89,7 @@ function helping {
 
 function options_usage {
 	echo -e "\n"
-	echo -e " Options usage example: create-react-app $(ChangeColor green text)$FILE$(ChangeColor white text) --no-posgres"
+	echo -e " Options usage example: create-django-app $(ChangeColor green text)$FILE$(ChangeColor white text) --no-posgres"
   	echo -e "\n"
   	echo -e " Options:"
   	echo -e "\n"
@@ -143,8 +143,8 @@ function base_script {
 				OSCAR_APP="with Oscar app"
 			;;
 
-			--django-downgrade ) 
-				DJANGO_VERSİON="download with 1.11.9 version django"
+			--django-latest ) 
+				BASE_DJANGO="django"
 			;;
             --alphine )
                 ALPHINE_LINUX="with small project"
@@ -165,6 +165,12 @@ function base_script {
             exit 1
         fi
         weebhook
+        if [[ -v BASE_DJANGO ]];then
+        	OK_PASS="true"
+        else
+        	BASE_DJANGO="django==1.11.9"
+        	STABLE_DJANGO="true"
+        fi
 	    echo "Creating File ... $NOT_POSGRES $OSCAR_APP $ALPHINE_LINUX"
 	    sleep 3
 	    mkdir $ROOT_DIRECTION/$FILE
@@ -186,7 +192,8 @@ function base_script {
 		echo -e "Swich virtualenviroment"
 		source .venv/bin/activate
 		echo -e "Installing Django and Pillow with pip library"
-		pip install django pillow gunicorn uwsgi psycopg2 django-ckeditor django-widget-tweaks
+		pip install -r ~/.local/share/django_app/requirements.txt 
+		# pip install $BASE_DJANGO pillow gunicorn uwsgi psycopg2 django-ckeditor django-widget-tweaks
 		if [[ -v OSCAR_APP ]];then
 		echo "(ChangeColor green text)Installing Oscar app ...$(ChangeColor white text)"
 		pip install django-oscar django-modeltranslation django-ckeditor
@@ -215,6 +222,8 @@ function base_script {
 		echo "media/" >> .gitignore
 		echo ".venv" >> .gitignore
 		echo "db.sqlite3" >> .gitignore
+		echo "*.pyc" >> .gitignore
+		echo "localhost/" >> .gitignore
 		echo "Creating .dockerignore file"
 		touch .dockerignore
 		echo ".idea/" >> .dockerignore
@@ -237,7 +246,11 @@ function base_script {
 			oscar_configuration
 		else
 			echo "$(ChangeColor green text)Django2 files configurations ...$(ChangeColor white text)"
-			django_2_configuration
+			if [[ -v STABLE_DJANGO ]];then
+				django_stable_configuration
+			else
+				django_2_configuration
+			fi
 		fi
 		ask_git
 		finish
@@ -700,10 +713,50 @@ function oscar_configuration {
 
 }
 
+
+# Django stable configuration
+function django_stable_configuration {
+	echo -e "Get Django application SECRET_KEY"
+	SECRET_KEY=$(python3 -c "import random;print(''.join([random.SystemRandom().choice('abcdefghijklmnopqrstuvwxyz0123456789\!@#$%^&*(-_=+)') for i in range(50)]))")
+	DJANGO_UP_APP_NAME=$(python3 -c 'a="'$APP_NAME'";d=[x.capitalize() for x in a.split("_")];print("".join(d))')
+	DJANGO_UP_PROJ_NAME=$(python3 -c 'a="'$PROJ_NAME'";d=[x.capitalize() for x in a.split("_")];print("".join(d))')
+	echo -e "configuration files add"
+	mkdir $FILE/localhost
+	cp -r ~/.local/share/django_app/middleware/ $PROJ_NAME/
+	cp -r ~/.local/share/django_app/settings.py $PROJ_NAME/settings.py
+	cp -r ~/.local/share/django_app/urls.py $PROJ_NAME/urls.py
+	cp -r ~/.local/share/django_app/__init__.py $PROJ_NAME/__init__.py
+	cp -r ~/.local/share/django_app/celery.py $PROJ_NAME/celery.py
+	cp -r ~/.local/share/django_app/docker-compose.yml $FILE/localhost/
+	cp -r ~/.local/share/django_app/base_user/ $FILE/
+	cp -r ~/.local/share/django_app/app/management/ $APP_NAME/
+	cp -r ~/.local/share/django_app/app/options/ $APP_NAME/
+	cp -r ~/.local/share/django_app/app/forms.py $APP_NAME/
+	cp -r ~/.local/share/django_app/app/signals.py $APP_NAME/
+	cp -r ~/.local/share/django_app/app/tasks.py $APP_NAME/
+	cp -r ~/.local/share/django_app/app/urls.py $APP_NAME/
+    cp -r ~/.local/share/django_app/README.md $FILE/
+    sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{DOCKER_PORT}|'$DOCKER_PORT'|g' $FILE/README.md
+	echo -e "Readme change."
+	echo -e "settings.py changed."
+	sed -i -e 's|#{SECRET_KEY}|'$SECRET_KEY'|g' -e 's|#{POSGRES_DB_NAME}|'$POSGRES_DB_NAME'|g' -e 's|#{POSGRES_DB_PASSWORD}|'$POSGRES_DB_PASSWORD'|g' -e 's|#{POSGRES_DB_USER}|'$POSGRES_DB_USER'|g' -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' -e 's|#{DJANGO_UP_APP_NAME}|'$DJANGO_UP_APP_NAME'|'g $PROJ_NAME/settings.py
+	echo -e "Urls py changed"
+	sed -i -e 's|#{ROOT}|'$(pwd/$FILE)'|g' $FILE/localhost/docker-compose.yml
+	echo -e "celery configuration"
+	sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' $PROJ_NAME/celery.py
+	sed -i -e 's|#{PROJ_NAME}|'$DJANGO_UP_PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' $PROJ_NAME/urls.py
+	sed -i -e 's|#{APP_NAME}|'$APP_NAME'|g' $APP_NAME/management/commands/ovveride_templates.py
+	python manage.py migrate
+	echo -e "Successfuly done [OK]"
+
+}
+
+
 function django_2_configuration {
 	echo -e "Get Django application SECRET_KEY"
-	SECRET_KEY=$(python manage.py diffsettings | grep 'SECRET_KEY' | cut -d' ' -f 3)
+	SECRET_KEY=$(python3 -c "import random;print(''.join([random.SystemRandom().choice('abcdefghijklmnopqrstuvwxyz0123456789\!@#$%^&*(-_=+)') for i in range(50)]))")
 	DJANGO_UP_APP_NAME=$(python3 -c 'a="'$APP_NAME'";d=[x.capitalize() for x in a.split("_")];print("".join(d))')
+	DJANGO_UP_PROJ_NAME=$(python3 -c 'a="'$PROJ_NAME'";d=[x.capitalize() for x in a.split("_")];print("".join(d))')
 	echo -e "configuration files add"
 	cp -r ~/.local/share/django_app/middleware/ $PROJ_NAME/
 	cp -r ~/.local/share/django_app/settings_django2.py $PROJ_NAME/settings.py
@@ -718,9 +771,9 @@ function django_2_configuration {
     sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{DOCKER_PORT}|'$DOCKER_PORT'|g' $FILE/README.md
 	echo -e "Readme change."
 	echo -e "settings.py changed."
-	sed -i -e 's|#{SECRET_KEY}|'$SECRET_KEY'|g' -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' -e 's|#{DJANGO_UP_APP_NAME}|'$DJANGO_UP_APP_NAME'|'g $PROJ_NAME/settings.py
+	sed -i -e 's|#{SECRET_KEY}|'$SECRET_KEY'|g' -e 's|#{POSGRES_DB_NAME}|'$POSGRES_DB_NAME'|g' -e 's|#{POSGRES_DB_PASSWORD}|'$POSGRES_DB_PASSWORD'|g' -e 's|#{POSGRES_DB_USER}|'$POSGRES_DB_USER'|g' -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' -e 's|#{DJANGO_UP_APP_NAME}|'$DJANGO_UP_APP_NAME'|'g $PROJ_NAME/settings.py
 	echo -e "Urls py changed"
-	sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' $PROJ_NAME/urls.py
+	sed -i -e 's|#{PROJ_NAME}|'$DJANGO_UP_PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' $PROJ_NAME/urls.py
 	sed -i -e 's|#{APP_NAME}|'$APP_NAME'|g' $APP_NAME/management/commands/ovveride_templates.py
 	python manage.py migrate
 	echo -e "Successfuly done [OK]"

@@ -17,24 +17,26 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from django.conf.urls.i18n import i18n_patterns  # for url translation
-from oscar.app import application # oscar applications urls here
+# from django.conf.urls.i18n import i18n_patterns  # for url translation
+# from oscar.app import application # oscar applications urls here
 
 
 urlpatterns = [
     url(r'^labmin/', admin.site.urls),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-urlpatterns += i18n_patterns(
     url(r'^', include("#{APP_NAME}.urls")),
-    url(r'^', application.urls),
-    url(r'^page/', include('django.contrib.flatpages.urls')),
-)
+]
+
+# urlpatterns += i18n_patterns(
+#     url(r'^', include("#{APP_NAME}.urls")),
+#     url(r'^', application.urls),
+#     url(r'^page/', include('django.contrib.flatpages.urls')),
+# )
 
 # in development django built-in server serves static and media content 
 if not settings.PROD:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 # This is change default admin panel Headers and titles
 admin.site.site_header = '#{PROJ_NAME} Admin'
 admin.site.site_title = '#{PROJ_NAME} Administration'
