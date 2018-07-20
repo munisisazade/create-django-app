@@ -736,12 +736,12 @@ function django_stable_configuration {
 	cp -r ~/.local/share/django_app/app/tasks.py $APP_NAME/
 	cp -r ~/.local/share/django_app/app/urls.py $APP_NAME/
     cp -r ~/.local/share/django_app/README.md ../$FILE/
-    sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{DOCKER_PORT}|'$DOCKER_PORT'|g' $FILE/README.md
+    sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{DOCKER_PORT}|'$DOCKER_PORT'|g' README.md
 	echo -e "Readme change."
 	echo -e "settings.py changed."
-	sed -i -e 's|#{SECRET_KEY}|'$SECRET_KEY'|g' -e 's|#{POSGRES_DB_NAME}|'$POSGRES_DB_NAME'|g' -e 's|#{POSGRES_DB_PASSWORD}|'$POSGRES_DB_PASSWORD'|g' -e 's|#{POSGRES_DB_USER}|'$POSGRES_DB_USER'|g' -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' -e 's|#{DJANGO_UP_APP_NAME}|'$DJANGO_UP_APP_NAME'|'g $PROJ_NAME/settings.py
+	sed -i -e 's|#{SECRET_KEY}|'$SECRET_KEY'|g' -e 's|#{POSGRES_DB_NAME}|'$POSGRES_DB_NAME'|g' -e 's|#{POSGRES_DB_PASSWORD}|'$POSGRES_DB_PASSWORD'|g' -e 's|#{POSGRES_DB_USER}|'$POSGRES_DB_USER'|g' -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' -e 's|#{DJANGO_UP_APP_NAME}|'$DJANGO_UP_APP_NAME'|g' $PROJ_NAME/settings.py
 	echo -e "Urls py changed"
-	sed -i -e 's|#{ROOT}|'$ROOT_DIRECTION/$FILE'|g' $FILE/localhost/docker-compose.yml
+	sed -i -e 's|#{ROOT}|'$ROOT_DIRECTION/$FILE'|g' localhost/docker-compose.yml
 	echo -e "celery configuration"
 	sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' $PROJ_NAME/celery.py
 	sed -i -e 's|#{PROJ_NAME}|'$DJANGO_UP_PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' $PROJ_NAME/urls.py
