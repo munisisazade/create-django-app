@@ -188,7 +188,7 @@ function base_script {
 		    echo "Install python3 virtualenviroment created"
 		    sudo apt-get -y install python3-pip python3-dev libpq-dev python3-venv
 		    sudo apt-get -y install libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk
-		    python3.5 -m venv .venv
+		    python3 -m venv .venv
 		fi
 		echo -e "Swich virtualenviroment"
 		source .venv/bin/activate

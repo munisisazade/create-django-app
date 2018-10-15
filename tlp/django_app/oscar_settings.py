@@ -81,13 +81,13 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'widget_tweaks',
     '#{APP_NAME}.apps.#{DJANGO_UP_APP_NAME}Config',
-] + get_core_apps(['oscar_apps.dashboard.pages',
-                   'oscar_apps.dashboard.catalogue',
-                   'oscar_apps.checkout',
-                   'oscar_apps.customer',
-                   'oscar_apps.catalogue',
-                   'oscar_apps.basket',
-                   'oscar_apps.promotions'])
+] # + get_core_apps(['oscar_apps.dashboard.pages',
+#                    'oscar_apps.dashboard.catalogue',
+#                    'oscar_apps.checkout',
+#                    'oscar_apps.customer',
+#                    'oscar_apps.catalogue',
+#                    'oscar_apps.basket',
+#                    'oscar_apps.promotions'])
 
 # Oscar shopping configuration
 OSCAR_ALLOW_ANON_CHECKOUT = True
