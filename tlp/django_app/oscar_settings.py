@@ -72,8 +72,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'django.contrin.flatpages',
-    'celery.apps.CeleryConfig',
+    'django.contrib.flatpages',
+    'celery',  # Don't forget to add celery
+    'django_celery_results',  # celery result
+    'django_celery_beat',
     # 'rosetta',  # for translation
     'ckeditor',
     'ckeditor_uploader',

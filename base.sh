@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="2.0.2"
+VERSION="2.0.3"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 GIT_DIRECTORY=~/.create-django-app/
@@ -569,33 +569,61 @@ function docker_compose {
 		echo "      - LC_ALL=C.UTF-8" >> docker-compose.yml
 		echo "" >> docker-compose.yml
 		echo "" >> docker-compose.yml
-		echo "# redis:" >> docker-compose.yml
-    	echo "#   image: redis:latest" >> docker-compose.yml
-    	echo "#   restart: \"on-failure\"" >> docker-compose.yml
-    	echo "#   container_name: redis" >> docker-compose.yml
-    	echo "#   ports:" >> docker-compose.yml
-     	echo "#     - 6379:6379" >> docker-compose.yml
-    	echo "#   volumes:" >> docker-compose.yml
-      	echo "#     - ./redisdb:/var/lib/redis" >> docker-compose.yml
+		echo "  redis:" >> docker-compose.yml
+    	echo "    image: redis:latest" >> docker-compose.yml
+    	echo "    restart: \"on-failure\"" >> docker-compose.yml
+    	echo "    container_name: redis" >> docker-compose.yml
+    	echo "    ports:" >> docker-compose.yml
+     	echo "      - 6379:6379" >> docker-compose.yml
+    	echo "    volumes:" >> docker-compose.yml
+      	echo "      - ./redisdb:/var/lib/redis" >> docker-compose.yml
       	echo "" >> docker-compose.yml
       	echo "" >> docker-compose.yml
-  		echo "# celery:" >> docker-compose.yml
-    	echo "#   restart: \"always\"" >> docker-compose.yml
-    	echo "#   build:" >> docker-compose.yml
-      	echo "#   context: ." >> docker-compose.yml
-      	echo "#   dockerfile: celery.dockerfile" >> docker-compose.yml
-    	echo "#   container_name: celery" >> docker-compose.yml
-    	echo "#   env_file: .env" >> docker-compose.yml
-    	echo "#   command: celery --app=$PROJ_NAME.celery:app worker -B --loglevel=INFO" >> docker-compose.yml
-    	echo "#   volumes:" >> docker-compose.yml
-      	echo "#     - .:/src" >> docker-compose.yml
-    	echo "#   links:" >> docker-compose.yml
-      	echo "#     - redis" >> docker-compose.yml
-      	echo "#     - postgres" >> docker-compose.yml
-    	echo "#   depends_on:" >> docker-compose.yml
-      	echo "#     - \"redis\"" >> docker-compose.yml
-      	echo "#     - \"postgres\"" >> docker-compose.yml
+  		echo "  celery:" >> docker-compose.yml
+    	echo "    restart: \"always\"" >> docker-compose.yml
+    	echo "    build:" >> docker-compose.yml
+      	echo "      context: ." >> docker-compose.yml
+      	echo "      dockerfile: celery.dockerfile" >> docker-compose.yml
+    	echo "    container_name: celery" >> docker-compose.yml
+    	echo "    env_file: .env" >> docker-compose.yml
+    	echo "    command: celery --app=$PROJ_NAME.celery:app worker -B --loglevel=INFO" >> docker-compose.yml
+    	echo "    volumes:" >> docker-compose.yml
+      	echo "      - .:/src" >> docker-compose.yml
+    	echo "    links:" >> docker-compose.yml
+      	echo "      - redis" >> docker-compose.yml
+      	echo "      - postgres" >> docker-compose.yml
+    	echo "    depends_on:" >> docker-compose.yml
+      	echo "      - \"redis\"" >> docker-compose.yml
+      	echo "      - \"postgres\"" >> docker-compose.yml
       	echo "" >> docker-compose.yml
+      	echo "" >> docker-compose.yml
+	fi
+	if [[ -v OSCAR_APP ]];then
+	    echo "  elasticsearch:" >> docker-compose.yml
+        echo "    #image: docker.elastic.co/elasticsearch/elasticsearch:6.2.1" >> docker-compose.yml
+        echo "    image: elasticsearch:2.4.0" >> docker-compose.yml
+        echo "    container_name: elasticsearch" >> docker-compose.yml
+        echo "    environment:" >> docker-compose.yml
+        echo "      - node.max_local_storage_nodes=1" >> docker-compose.yml
+        echo "      - ES_HOST=http://localhost:9200" >> docker-compose.yml
+        echo "    volumes:" >> docker-compose.yml
+        echo "      - ./esdata:/usr/share/elasticsearch/data" >> docker-compose.yml
+        echo "    networks:" >> docker-compose.yml
+        echo "      - esnet" >> docker-compose.yml
+        echo "    ports:" >> docker-compose.yml
+        echo "      - \"9200:9200\"" >> docker-compose.yml
+        echo "      - \"9300:9300\"" >> docker-compose.yml
+        echo "    deploy:" >> docker-compose.yml
+        echo "      mode: 'replicated'" >> docker-compose.yml
+        echo "      replicas: 1" >> docker-compose.yml
+        echo "      resources:" >> docker-compose.yml
+        echo "        limits:" >> docker-compose.yml
+        echo "          memory: 1g" >> docker-compose.yml
+        echo "    ulimits:" >> docker-compose.yml
+        echo "      memlock:" >> docker-compose.yml
+        echo "        soft: -1" >> docker-compose.yml
+        echo "        hard: -1" >> docker-compose.yml
+	    echo "" >> docker-compose.yml
       	echo "" >> docker-compose.yml
 	fi
 	echo "  web:" >> docker-compose.yml
@@ -625,22 +653,22 @@ function docker_compose {
 		echo "    depends_on:" >> docker-compose.yml
 		echo "      - \"postgres\"" >> docker-compose.yml
 	fi
-	echo "# networks:" >> docker-compose.yml
-  	echo "#   default:" >> docker-compose.yml
-    echo "#     external:" >> docker-compose.yml
-    echo "#       name: nginx-proxy" >> docker-compose.yml
+	echo "networks:" >> docker-compose.yml
+  	echo "  default:" >> docker-compose.yml
+    echo "    external:" >> docker-compose.yml
+    echo "      name: nginx-proxy" >> docker-compose.yml
 }
 
 function celery_dockerfile {
 	touch celery.dockerfile
-	echo "FROM python:latest" >> celery.dockerfile
+	echo "FROM python:3.5" >> celery.dockerfile
 	echo "ENV PYTHONUNBUFFERED 1" >> celery.dockerfile
 	echo "" >> celery.dockerfile
 	echo "#ENV C_FORCE_ROOT true" >> celery.dockerfile
 	echo "" >> celery.dockerfile
-	echo "ENV APP_USER myapp" >> celery.dockerfile
-	echo "ENV APP_ROOT /src" >> celery.dockerfile
-	echo "RUN mkdir /src;" >> celery.dockerfile
+	echo "ENV APP_USER root" >> celery.dockerfile
+	echo "ENV APP_ROOT /code" >> celery.dockerfile
+	echo "RUN mkdir /code;" >> celery.dockerfile
 	echo "RUN groupadd -r \${APP_USER} \\" >> celery.dockerfile
 	echo "    && useradd -r -m \\" >> celery.dockerfile
 	echo "    --home-dir \${APP_ROOT} \\" >> celery.dockerfile
@@ -698,7 +726,7 @@ function oscar_configuration {
 	mkdir localhost
 	cp -r ~/.local/share/django_app/middleware/ $PROJ_NAME/
 	cp -r ~/.local/share/django_app/oscar_settings.py $PROJ_NAME/settings.py
-	cp -r ~/.local/share/django_app/urls.py $PROJ_NAME/
+	cp -r ~/.local/share/django_app/oscar_urls.py $PROJ_NAME/urls.py
 	cp -r ~/.local/share/django_app/__init__.py $PROJ_NAME/__init__.py
 	cp -r ~/.local/share/django_app/celery.py $PROJ_NAME/celery.py
 	cp -r ~/.local/share/django_app/docker-compose.yml localhost/
