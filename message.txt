@@ -1,12 +1,3 @@
-#432326 new version relase 2.0.0
-* Add Django Custom User app 
-* Custom user app name base_user
-* Fix django stable version 1.11.9
-* Downgrade django 2.0.7 to 1.11.9
-* Celery app configuration
-* Social Auth Login Register added #423642
-* Local development database changed to Postgresql
-* Add new localhost folder contains docker-compose.yml
-* localhost development use this file up postgres docker and use it
-* All configuration tested *
-* Creating new test case
+#432327 new version relase 2.0.2
+* add new oscar configuration
+* fix some problems
