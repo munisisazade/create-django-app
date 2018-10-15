@@ -81,7 +81,8 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'widget_tweaks',
     '#{APP_NAME}.apps.#{DJANGO_UP_APP_NAME}Config',
-] # + get_core_apps(['oscar_apps.dashboard.pages',
+
+] + get_core_apps() # + get_core_apps(['oscar_apps.dashboard.pages',
 #                    'oscar_apps.dashboard.catalogue',
 #                    'oscar_apps.checkout',
 #                    'oscar_apps.customer',
