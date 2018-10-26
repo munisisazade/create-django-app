@@ -20,9 +20,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "#{SECRET_KEY}"
-
+DEBUG_STATUS = False
+if "#{BASE_LINUX_USERNAME}" in BASE_DIR:
+    DEBUG_STATUS = True
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = DEBUG_STATUS
 PROD = not DEBUG
 
 ALLOWED_HOSTS = ['*'] if PROD else ['*']

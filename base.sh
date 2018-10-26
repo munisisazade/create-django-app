@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="2.0.3"
+VERSION="2.0.4"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 GIT_DIRECTORY=~/.create-django-app/
@@ -559,7 +559,7 @@ function docker_compose {
 		echo "" >> docker-compose.yml
 		echo "  postgres:" >> docker-compose.yml
 		echo "    container_name:  postgres-db" >> docker-compose.yml
-		echo "    image:           postgres:9.6" >> docker-compose.yml
+		echo "    image:           postgres:9.6.6" >> docker-compose.yml
 		echo "    ports:" >> docker-compose.yml
 		echo "      - 5432:5432 # Bind host port 5432 to PostgreSQL port 5432" >> docker-compose.yml
 		echo "    volumes:" >> docker-compose.yml
@@ -763,6 +763,7 @@ function django_stable_configuration {
 	SECRET_KEY=$(python3 -c "import random;print(''.join([random.SystemRandom().choice('abcdefghijklmnopqrstuvwxyz0123456789\!@#$%^&*(-_=+)') for i in range(50)]))")
 	DJANGO_UP_APP_NAME=$(python3 -c 'a="'$APP_NAME'";d=[x.capitalize() for x in a.split("_")];print("".join(d))')
 	DJANGO_UP_PROJ_NAME=$(python3 -c 'a="'$PROJ_NAME'";d=[x.capitalize() for x in a.split("_")];print("".join(d))')
+	BASE_LINUX_USERNAME=$(whoami)
 	echo -e "configuration files add"
 	mkdir localhost
 	cp -r ~/.local/share/django_app/middleware/ $PROJ_NAME/
@@ -782,7 +783,7 @@ function django_stable_configuration {
     sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{DOCKER_PORT}|'$DOCKER_PORT'|g' README.md
 	echo -e "Readme change."
 	echo -e "settings.py changed."
-	sed -i -e 's|#{SECRET_KEY}|'$SECRET_KEY'|g' -e 's|#{POSGRES_DB_NAME}|'$POSGRES_DB_NAME'|g' -e 's|#{POSGRES_DB_PASSWORD}|'$POSGRES_DB_PASSWORD'|g' -e 's|#{POSGRES_DB_USER}|'$POSGRES_DB_USER'|g' -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' -e 's|#{DJANGO_UP_APP_NAME}|'$DJANGO_UP_APP_NAME'|g' $PROJ_NAME/settings.py
+	sed -i -e 's|#{SECRET_KEY}|'$SECRET_KEY'|g' -e 's|#{BASE_LINUX_USERNAME}|'$BASE_LINUX_USERNAME'|g' -e 's|#{POSGRES_DB_NAME}|'$POSGRES_DB_NAME'|g' -e 's|#{POSGRES_DB_PASSWORD}|'$POSGRES_DB_PASSWORD'|g' -e 's|#{POSGRES_DB_USER}|'$POSGRES_DB_USER'|g' -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' -e 's|#{DJANGO_UP_APP_NAME}|'$DJANGO_UP_APP_NAME'|g' $PROJ_NAME/settings.py
 	echo -e "Urls py changed"
 	sed -i -e 's|#{ROOT}|'$ROOT_DIRECTION/$FILE'|g' localhost/docker-compose.yml
 	echo -e "celery configuration"

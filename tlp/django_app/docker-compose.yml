@@ -4,7 +4,7 @@ services:
 
   postgres:
     container_name:  postgres-db
-    image:           postgres:9.6
+    image:           postgres:9.6.6
     ports:
       - 5432:5432 # Bind host port 5432 to PostgreSQL port 5432
     volumes:
