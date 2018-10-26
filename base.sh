@@ -666,7 +666,7 @@ function celery_dockerfile {
 	echo "" >> celery.dockerfile
 	echo "#ENV C_FORCE_ROOT true" >> celery.dockerfile
 	echo "" >> celery.dockerfile
-	echo "ENV APP_USER root" >> celery.dockerfile
+	echo "ENV APP_USER myapp" >> celery.dockerfile
 	echo "ENV APP_ROOT /code" >> celery.dockerfile
 	echo "RUN mkdir /code;" >> celery.dockerfile
 	echo "RUN groupadd -r \${APP_USER} \\" >> celery.dockerfile
