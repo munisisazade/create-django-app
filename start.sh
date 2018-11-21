@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# Author Munis Isazade
 COMMAND_NAME=create-django-app
 LOCAL_COMMAND_DIRECTORY=~/.local/bin/
 TLP_DIRECTORY=~/.local/share/

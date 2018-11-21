@@ -1,4 +1,4 @@
-#432327 new version relase 2.0.3
+#432328 new version relase 2.0.5
 * add new oscar configuration
-* fix some problems
-* update tool from 2.0.2 -> 2.0.3
+* fix some oscar config problems
+* update tool from 2.0.4 -> 2.0.5
