@@ -8,11 +8,36 @@ services:
     ports:
       - 5432:5432 # Bind host port 5432 to PostgreSQL port 5432
     volumes:
-      - #{ROOT}/pgdb:/var/lib/postgresql/data
-    env_file: #{ROOT}/.env
+      - ../pgdb:/var/lib/postgresql/data
+    env_file: ../.env
     environment:
       - LC_ALL=C.UTF-8
 
+ # redis:
+ #   image: redis:4.0.11
+ #   restart: "on-failure"
+ #   container_name: redis
+ #   ports:
+ #     - 6379:6379
+ #   volumes:
+ #     - ../redisdb:/var/lib/redis
+
+ # celery:
+ #   restart: "always"
+ #   build:
+ #     context: .
+ #     dockerfile: ../celery.dockerfile
+ #   container_name: celery
+ #   env_file: ../.env
+ #   command: celery --app=starex.celery:app worker -B --loglevel=INFO
+ #   volumes:
+ #     - ../:/src
+ #   links:
+ #     - redis
+ #     - postgres
+ #   depends_on:
+ #     - "redis"
+ #     - "postgres"
 
 networks:
   default:

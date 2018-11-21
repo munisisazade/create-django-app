@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="2.0.4"
+VERSION="2.0.5"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 GIT_DIRECTORY=~/.create-django-app/
@@ -570,7 +570,7 @@ function docker_compose {
 		echo "" >> docker-compose.yml
 		echo "" >> docker-compose.yml
 		echo "  redis:" >> docker-compose.yml
-    	echo "    image: redis:latest" >> docker-compose.yml
+    	echo "    image: redis:4.0.11" >> docker-compose.yml
     	echo "    restart: \"on-failure\"" >> docker-compose.yml
     	echo "    container_name: redis" >> docker-compose.yml
     	echo "    ports:" >> docker-compose.yml
@@ -718,18 +718,18 @@ function uwsgi_ini {
 # Oscar configuration add project
 function oscar_configuration {
 	echo -e "Get Django application SECRET_KEY"
-	SECRET_KEY=$(python3 -c "import random;print(''.join([random.SystemRandom().choice('abcdefghijklmnopqrstuvwxyz0123456789\!@#$%^&*(-_=+)') for i in range(50)]))")
+	SECRET_KEY=$(python -c 'import random; result = "".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)]); print(result)')
 	DJANGO_UP_APP_NAME=$(python3 -c 'a="'$APP_NAME'";d=[x.capitalize() for x in a.split("_")];print("".join(d))')
 	DJANGO_UP_PROJ_NAME=$(python3 -c 'a="'$PROJ_NAME'";d=[x.capitalize() for x in a.split("_")];print("".join(d))')
 	BASE_LINUX_USERNAME=$(whoami)
 	echo -e "configuration files add"
-	mkdir localhost
+	mkdir development
 	cp -r ~/.local/share/django_app/middleware/ $PROJ_NAME/
 	cp -r ~/.local/share/django_app/oscar_settings.py $PROJ_NAME/settings.py
 	cp -r ~/.local/share/django_app/oscar_urls.py $PROJ_NAME/urls.py
 	cp -r ~/.local/share/django_app/__init__.py $PROJ_NAME/__init__.py
 	cp -r ~/.local/share/django_app/celery.py $PROJ_NAME/celery.py
-	cp -r ~/.local/share/django_app/docker-compose.yml localhost/
+	cp -r ~/.local/share/django_app/docker-compose.yml development/
 	cp -r ~/.local/share/django_app/base_user/ ../$FILE/
 	cp -r ~/.local/share/django_app/oscar_apps/ ../$FILE/
 	cp -r ~/.local/share/django_app/app/management/ $APP_NAME/
@@ -742,7 +742,7 @@ function oscar_configuration {
     sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{DOCKER_PORT}|'$DOCKER_PORT'|g' README.md
 	echo -e "Readme change."
 	echo -e "settings.py changed."
-	sed -i -e 's|#{SECRET_KEY}|'$SECRET_KEY'|g' -e 's|#{BASE_LINUX_USERNAME}|'$BASE_LINUX_USERNAME'|g' -e 's|#{POSGRES_DB_NAME}|'$POSGRES_DB_NAME'|g' -e 's|#{POSGRES_DB_PASSWORD}|'$POSGRES_DB_PASSWORD'|g' -e 's|#{POSGRES_DB_USER}|'$POSGRES_DB_USER'|g' -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' -e 's|#{DJANGO_UP_APP_NAME}|'$DJANGO_UP_APP_NAME'|g' $PROJ_NAME/settings.py
+	sed -i -e 's|#{SECRET_KEY}|'$SECRET_KEY'|g' -e 's|#{POSGRES_DB_NAME}|'$POSGRES_DB_NAME'|g' -e 's|#{POSGRES_DB_PASSWORD}|'$POSGRES_DB_PASSWORD'|g' -e 's|#{POSGRES_DB_USER}|'$POSGRES_DB_USER'|g' -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' -e 's|#{DJANGO_UP_APP_NAME}|'$DJANGO_UP_APP_NAME'|g' $PROJ_NAME/settings.py
 	echo -e "Urls py changed"
 	sed -i -e 's|#{ROOT}|'$ROOT_DIRECTION/$FILE'|g' localhost/docker-compose.yml
 	echo -e "celery configuration"
@@ -760,18 +760,18 @@ function oscar_configuration {
 # Django stable configuration
 function django_stable_configuration {
 	echo -e "Get Django application SECRET_KEY"
-	SECRET_KEY=$(python3 -c "import random;print(''.join([random.SystemRandom().choice('abcdefghijklmnopqrstuvwxyz0123456789\!@#$%^&*(-_=+)') for i in range(50)]))")
+	SECRET_KEY=$(python -c 'import random; result = "".join([random.choice("abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)") for i in range(50)]); print(result)')
 	DJANGO_UP_APP_NAME=$(python3 -c 'a="'$APP_NAME'";d=[x.capitalize() for x in a.split("_")];print("".join(d))')
 	DJANGO_UP_PROJ_NAME=$(python3 -c 'a="'$PROJ_NAME'";d=[x.capitalize() for x in a.split("_")];print("".join(d))')
 	BASE_LINUX_USERNAME=$(whoami)
 	echo -e "configuration files add"
-	mkdir localhost
+	mkdir development
 	cp -r ~/.local/share/django_app/middleware/ $PROJ_NAME/
 	cp -r ~/.local/share/django_app/settings.py $PROJ_NAME/settings.py
 	cp -r ~/.local/share/django_app/urls.py $PROJ_NAME/urls.py
 	cp -r ~/.local/share/django_app/__init__.py $PROJ_NAME/__init__.py
 	cp -r ~/.local/share/django_app/celery.py $PROJ_NAME/celery.py
-	cp -r ~/.local/share/django_app/docker-compose.yml localhost/
+	cp -r ~/.local/share/django_app/docker-compose.yml development/
 	cp -r ~/.local/share/django_app/base_user/ ../$FILE/
 	cp -r ~/.local/share/django_app/app/management/ $APP_NAME/
 	cp -r ~/.local/share/django_app/app/options/ $APP_NAME/
@@ -783,7 +783,7 @@ function django_stable_configuration {
     sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{DOCKER_PORT}|'$DOCKER_PORT'|g' README.md
 	echo -e "Readme change."
 	echo -e "settings.py changed."
-	sed -i -e 's|#{SECRET_KEY}|'$SECRET_KEY'|g' -e 's|#{BASE_LINUX_USERNAME}|'$BASE_LINUX_USERNAME'|g' -e 's|#{POSGRES_DB_NAME}|'$POSGRES_DB_NAME'|g' -e 's|#{POSGRES_DB_PASSWORD}|'$POSGRES_DB_PASSWORD'|g' -e 's|#{POSGRES_DB_USER}|'$POSGRES_DB_USER'|g' -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' -e 's|#{DJANGO_UP_APP_NAME}|'$DJANGO_UP_APP_NAME'|g' $PROJ_NAME/settings.py
+	sed -i -e 's|#{SECRET_KEY}|'$SECRET_KEY'|g' -e 's|#{POSGRES_DB_NAME}|'$POSGRES_DB_NAME'|g' -e 's|#{POSGRES_DB_PASSWORD}|'$POSGRES_DB_PASSWORD'|g' -e 's|#{POSGRES_DB_USER}|'$POSGRES_DB_USER'|g' -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' -e 's|#{DJANGO_UP_APP_NAME}|'$DJANGO_UP_APP_NAME'|g' $PROJ_NAME/settings.py
 	echo -e "Urls py changed"
 	sed -i -e 's|#{ROOT}|'$ROOT_DIRECTION/$FILE'|g' localhost/docker-compose.yml
 	echo -e "celery configuration"
