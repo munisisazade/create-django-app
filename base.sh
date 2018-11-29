@@ -1,9 +1,10 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="2.0.6"
+VERSION="2.0.7"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 GIT_DIRECTORY=~/.create-django-app/
+DEFAULT_DJANGO_PATH=~/.local/share
 ISSUE_URL="https://github.com/munisisazade/create-django-app/issues"
 PACKAGE_CHANGE="#pkg-resources"
 
@@ -193,7 +194,7 @@ function base_script {
 		echo -e "Swich virtualenviroment"
 		source .venv/bin/activate
 		echo -e "Installing Django and Pillow with pip library"
-		pip install -r ~/.local/share/django_app/requirements.txt 
+		pip install -r $DEFAULT_DJANGO_PATH/django_app/requirements.txt
 		# pip install $BASE_DJANGO pillow gunicorn uwsgi psycopg2 django-ckeditor django-widget-tweaks
 		if [[ -v OSCAR_APP ]];then
 		echo "(ChangeColor green text)Installing Oscar app ...$(ChangeColor white text)"
@@ -724,21 +725,21 @@ function oscar_configuration {
 	BASE_LINUX_USERNAME=$(whoami)
 	echo -e "configuration files add"
 	mkdir development
-	cp -r ~/.local/share/django_app/middleware/ $PROJ_NAME/
-	cp -r ~/.local/share/django_app/oscar_settings.py $PROJ_NAME/settings.py
-	cp -r ~/.local/share/django_app/oscar_urls.py $PROJ_NAME/urls.py
-	cp -r ~/.local/share/django_app/__init__.py $PROJ_NAME/__init__.py
-	cp -r ~/.local/share/django_app/celery.py $PROJ_NAME/celery.py
-	cp -r ~/.local/share/django_app/docker-compose.yml development/
-	cp -r ~/.local/share/django_app/base_user/ ../$FILE/
-	cp -r ~/.local/share/django_app/oscar_apps/ ../$FILE/
-	cp -r ~/.local/share/django_app/app/management/ $APP_NAME/
-	cp -r ~/.local/share/django_app/app/options/ $APP_NAME/
-	cp -r ~/.local/share/django_app/app/forms.py $APP_NAME/
-	cp -r ~/.local/share/django_app/app/signals.py $APP_NAME/
-	cp -r ~/.local/share/django_app/app/tasks.py $APP_NAME/
-	cp -r ~/.local/share/django_app/app/urls.py $APP_NAME/
-	cp -r ~/.local/share/django_app/README.md ../$FILE/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/middleware/ $PROJ_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/oscar_settings.py $PROJ_NAME/settings.py
+	cp -r $DEFAULT_DJANGO_PATH/django_app/oscar_urls.py $PROJ_NAME/urls.py
+	cp -r $DEFAULT_DJANGO_PATH/django_app/__init__.py $PROJ_NAME/__init__.py
+	cp -r $DEFAULT_DJANGO_PATH/django_app/celery.py $PROJ_NAME/celery.py
+	cp -r $DEFAULT_DJANGO_PATH/django_app/docker-compose.yml development/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/base_user/ ../$FILE/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/oscar_apps/ ../$FILE/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/app/management/ $APP_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/app/options/ $APP_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/app/forms.py $APP_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/app/signals.py $APP_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/app/tasks.py $APP_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/app/urls.py $APP_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/README.md ../$FILE/
     sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{DOCKER_PORT}|'$DOCKER_PORT'|g' README.md
 	echo -e "Readme change."
 	echo -e "settings.py changed."
@@ -775,20 +776,20 @@ function django_stable_configuration {
 	BASE_LINUX_USERNAME=$(whoami)
 	echo -e "configuration files add"
 	mkdir development
-	cp -r ~/.local/share/django_app/middleware/ $PROJ_NAME/
-	cp -r ~/.local/share/django_app/settings.py $PROJ_NAME/settings.py
-	cp -r ~/.local/share/django_app/urls.py $PROJ_NAME/urls.py
-	cp -r ~/.local/share/django_app/__init__.py $PROJ_NAME/__init__.py
-	cp -r ~/.local/share/django_app/celery.py $PROJ_NAME/celery.py
-	cp -r ~/.local/share/django_app/docker-compose.yml development/
-	cp -r ~/.local/share/django_app/base_user/ ../$FILE/
-	cp -r ~/.local/share/django_app/app/management/ $APP_NAME/
-	cp -r ~/.local/share/django_app/app/options/ $APP_NAME/
-	cp -r ~/.local/share/django_app/app/forms.py $APP_NAME/
-	cp -r ~/.local/share/django_app/app/signals.py $APP_NAME/
-	cp -r ~/.local/share/django_app/app/tasks.py $APP_NAME/
-	cp -r ~/.local/share/django_app/app/urls.py $APP_NAME/
-    cp -r ~/.local/share/django_app/README.md ../$FILE/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/middleware/ $PROJ_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/settings.py $PROJ_NAME/settings.py
+	cp -r $DEFAULT_DJANGO_PATH/django_app/urls.py $PROJ_NAME/urls.py
+	cp -r $DEFAULT_DJANGO_PATH/django_app/__init__.py $PROJ_NAME/__init__.py
+	cp -r $DEFAULT_DJANGO_PATH/django_app/celery.py $PROJ_NAME/celery.py
+	cp -r $DEFAULT_DJANGO_PATH/django_app/docker-compose.yml development/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/base_user/ ../$FILE/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/app/management/ $APP_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/app/options/ $APP_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/app/forms.py $APP_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/app/signals.py $APP_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/app/tasks.py $APP_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/app/urls.py $APP_NAME/
+    cp -r $DEFAULT_DJANGO_PATH/django_app/README.md ../$FILE/
     sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{DOCKER_PORT}|'$DOCKER_PORT'|g' README.md
 	echo -e "Readme change."
 	echo -e "settings.py changed."
@@ -812,16 +813,16 @@ function django_2_configuration {
 	DJANGO_UP_APP_NAME=$(python3 -c 'a="'$APP_NAME'";d=[x.capitalize() for x in a.split("_")];print("".join(d))')
 	DJANGO_UP_PROJ_NAME=$(python3 -c 'a="'$PROJ_NAME'";d=[x.capitalize() for x in a.split("_")];print("".join(d))')
 	echo -e "configuration files add"
-	cp -r ~/.local/share/django_app/middleware/ $PROJ_NAME/
-	cp -r ~/.local/share/django_app/settings_django2.py $PROJ_NAME/settings.py
-	cp -r ~/.local/share/django_app/urls_django2.py $PROJ_NAME/urls.py
-	cp -r ~/.local/share/django_app/app/management/ $APP_NAME/
-	cp -r ~/.local/share/django_app/app/options/ $APP_NAME/
-	cp -r ~/.local/share/django_app/app/forms.py $APP_NAME/
-	cp -r ~/.local/share/django_app/app/signals.py $APP_NAME/
-	cp -r ~/.local/share/django_app/app/tasks.py $APP_NAME/
-	cp -r ~/.local/share/django_app/app/urls.py $APP_NAME/
-    cp -r ~/.local/share/django_app/README.md $FILE/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/middleware/ $PROJ_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/settings_django2.py $PROJ_NAME/settings.py
+	cp -r $DEFAULT_DJANGO_PATH/django_app/urls_django2.py $PROJ_NAME/urls.py
+	cp -r $DEFAULT_DJANGO_PATH/django_app/app/management/ $APP_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/app/options/ $APP_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/app/forms.py $APP_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/app/signals.py $APP_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/app/tasks.py $APP_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/app/urls.py $APP_NAME/
+    cp -r $DEFAULT_DJANGO_PATH/django_app/README.md $FILE/
     sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{DOCKER_PORT}|'$DOCKER_PORT'|g' $FILE/README.md
 	echo -e "Readme change."
 	echo -e "settings.py changed."
@@ -960,8 +961,8 @@ function add_frontend {
 			echo "dev/.sass-cache/" >> .gitignore
 			LICENSE_NAME="$(date +%Y), Munis Isazade"
 			read -p "static file name: " static_name
-			cp -r ~/.local/share/django_app/Gruntfile.js dev/
-			cp -r ~/.local/share/django_app/LICENSE ../_frontend/
+			cp -r $DEFAULT_DJANGO_PATH/django_app/Gruntfile.js dev/
+			cp -r $DEFAULT_DJANGO_PATH/django_app/LICENSE ../_frontend/
 			sed -i -e 's|#{STATIC_ROOT}|'$static_name'|g' dev/Gruntfile.js
 			cd dev/
 			npm run prep
