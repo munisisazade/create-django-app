@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="2.0.7"
+VERSION="2.0.8"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 GIT_DIRECTORY=~/.create-django-app/
@@ -453,6 +453,7 @@ function docker_file {
 	echo "# the application rather than buffering it." >> Dockerfile
 	echo "ENV PYTHONUNBUFFERED 1" >> Dockerfile
 	echo "ENV APP_ROOT /code" >> Dockerfile
+	echo "ENV DEBUG False" >> Dockerfile
 	echo "" >> Dockerfile
 	echo "# Copy in your requirements file" >> Dockerfile
 	echo "ADD requirements.txt /requirements.txt" >> Dockerfile
@@ -637,7 +638,6 @@ function docker_compose {
 		echo "    env_file: .env" >> docker-compose.yml
 	fi
 	echo "    environment:" >> docker-compose.yml
-	echo "      - DEBUG=True" >> docker-compose.yml
 	echo "      - TIMEOUT=300" >> docker-compose.yml
 	echo "      - HTTP_PORT=$DOCKER_PORT" >> docker-compose.yml
 	OTHERPORT=`expr $DOCKER_PORT + 1`
@@ -669,6 +669,7 @@ function celery_dockerfile {
 	echo "" >> celery.dockerfile
 	echo "ENV APP_USER myapp" >> celery.dockerfile
 	echo "ENV APP_ROOT /code" >> celery.dockerfile
+	echo "ENV DEBUG False" >> celery.dockerfile
 	echo "RUN mkdir /code;" >> celery.dockerfile
 	echo "RUN groupadd -r \${APP_USER} \\" >> celery.dockerfile
 	echo "    && useradd -r -m \\" >> celery.dockerfile
