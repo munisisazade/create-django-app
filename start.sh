@@ -52,11 +52,11 @@ if [[ $1 ]]; then
     if [ -d $LOCAL_COMMAND_DIRECTORY ]; then
         mv $COMMAND_NAME $LOCAL_COMMAND_DIRECTORY
         if [ -d $TLP_DIRECTORY ]; then
-            cp -r tlp/django_app/ $TLP_DIRECTORY
+            cp -r tlp/django_app $TLP_DIRECTORY/
         else
             cd ~/.local/
             mkdir share
-            cp -r tlp/django_app/ $TLP_DIRECTORY
+            cp -r tlp/django_app $TLP_DIRECTORY/
         fi
     else
         cd ~
@@ -65,7 +65,7 @@ if [[ $1 ]]; then
         mkdir bin/
         mv $COMMAND_NAME $LOCAL_COMMAND_DIRECTORY
         mkdir share
-        cp -r tlp/django_app/ $TLP_DIRECTORY
+        cp -r tlp/django_app $TLP_DIRECTORY/
         sudo echo "# set PATH so it includes user's private bin directories" >> ~/.profile
         sudo echo "PATH=\"\$HOME/bin:\$HOME/.local/bin:\$PATH\"" >> ~/.profile
     fi
@@ -85,11 +85,11 @@ else
     if [ -d $LOCAL_COMMAND_DIRECTORY ]; then
         mv $COMMAND_NAME $LOCAL_COMMAND_DIRECTORY
         if [ -d $TLP_DIRECTORY ]; then
-            cp -r tlp/django_app/ $TLP_DIRECTORY
+            cp -r tlp/django_app $TLP_DIRECTORY/
         else
             cd ~/.local/
             mkdir share
-            cp -r tlp/django_app/ $TLP_DIRECTORY
+            cp -r tlp/django_app $TLP_DIRECTORY/
         fi
     else
         cd ~
@@ -98,7 +98,7 @@ else
         mkdir bin/
         mv $COMMAND_NAME $LOCAL_COMMAND_DIRECTORY
         mkdir share
-        cp -r tlp/django_app/ $TLP_DIRECTORY
+        cp -r tlp/django_app $TLP_DIRECTORY/
         sudo echo "# set PATH so it includes user's private bin directories" >> ~/.profile
         sudo echo "PATH=\"\$HOME/bin:\$HOME/.local/bin:\$PATH\"" >> ~/.profile
     fi
