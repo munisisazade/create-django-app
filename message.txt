@@ -1,4 +1,3 @@
-#432328 new version relase 2.0.5
-* add new oscar configuration
-* fix some oscar config problems
-* update tool from 2.0.4 -> 2.0.5
+#432329 new version relase 2.1.0
+* add new operation system Darwin
+* support all mac operation systems

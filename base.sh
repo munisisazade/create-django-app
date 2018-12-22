@@ -273,6 +273,7 @@ function weebhook {
         webhook_message=$(curl https://raw.githubusercontent.com/munisisazade/create-django-app/master/message.txt)
         echo -e "Opps This tool might be update"
         echo -e "$(ChangeColor green text)$webhook_message $(ChangeColor white text)"
+        create-django-app -U
         exit 1
 #        read -p "Do you want to update create-django-app(y,n)?" update_status
 #		if [ "$update_status" == y ] ; then
