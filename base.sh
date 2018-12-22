@@ -1,10 +1,15 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="2.0.8"
+VERSION="2.0.9"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 GIT_DIRECTORY=~/.create-django-app/
-DEFAULT_DJANGO_PATH=~/.local/share
+if [[ "$OSTYPE" == "darwin"* ]]; then
+	# Detect Operation system is Macbook pro OSX
+	DEFAULT_DJANGO_PATH=/usr/local/share
+else
+	DEFAULT_DJANGO_PATH=~/.local/share
+fi
 ISSUE_URL="https://github.com/munisisazade/create-django-app/issues"
 PACKAGE_CHANGE="#pkg-resources"
 
@@ -956,7 +961,6 @@ function add_frontend {
 			cp -r $frontend_directory/* $backend_directory/_frontend/
 			echo -e "Copy ready."
 			cd $backend_directory/_frontend/
-			# qayitbura
 			echo "dev/node_modules/" >> .gitignore
 			echo "dev/bower_components/" >> .gitignore
 			echo "dev/.sass-cache/" >> .gitignore

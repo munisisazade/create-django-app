@@ -1,8 +1,13 @@
 #!/bin/bash
 # Author Munis Isazade
 COMMAND_NAME=create-django-app
-LOCAL_COMMAND_DIRECTORY=~/.local/bin/
-TLP_DIRECTORY=~/.local/share/
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    LOCAL_COMMAND_DIRECTORY=/usr/local/bin
+    TLP_DIRECTORY=/usr/local/share
+else
+    LOCAL_COMMAND_DIRECTORY=~/.local/bin
+    TLP_DIRECTORY=~/.local/share
+fi
 GIR_REPO_URL=https://github.com/munisisazade/create-django-app.git
 #usage: ChangeColor $COLOR text/background
 function ChangeColor()
@@ -42,8 +47,8 @@ function ChangeColor()
 if [[ $1 ]]; then
     cp  base.sh $COMMAND_NAME
     chmod +x $COMMAND_NAME
-    rm -rf ~/.local/share/django_app/
-    rm -rf ~/.local/bin/create-django-app
+    rm -rf $TLP_DIRECTORY/django_app/
+    rm -rf $LOCAL_COMMAND_DIRECTORY/create-django-app
     if [ -d $LOCAL_COMMAND_DIRECTORY ]; then
         mv $COMMAND_NAME $LOCAL_COMMAND_DIRECTORY
         if [ -d $TLP_DIRECTORY ]; then
