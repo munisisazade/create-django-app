@@ -126,7 +126,7 @@ function base_script {
 	FILE=$1
 	OPTIONS=$2
 
-	if [[ -v OPTIONS ]];then
+	if [[ ! -z "$OPTIONS" ]];then
 		case ${OPTIONS} in
 
 			-a | --author)
@@ -172,7 +172,7 @@ function base_script {
             exit 1
         fi
         weebhook
-        if [[ -v BASE_DJANGO ]];then
+        if [[ ! -z "$BASE_DJANGO" ]];then
         	OK_PASS="true"
         else
         	BASE_DJANGO="django==1.11.9"
@@ -201,7 +201,7 @@ function base_script {
 		echo -e "Installing Django and Pillow with pip library"
 		pip install -r $DEFAULT_DJANGO_PATH/django_app/requirements.txt
 		# pip install $BASE_DJANGO pillow gunicorn uwsgi psycopg2 django-ckeditor django-widget-tweaks
-		if [[ -v OSCAR_APP ]];then
+		if [[ ! -z "$OSCAR_APP" ]];then
 		echo "(ChangeColor green text)Installing Oscar app ...$(ChangeColor white text)"
 		pip install django-oscar django-modeltranslation django-ckeditor
 		fi
@@ -248,12 +248,12 @@ function base_script {
 		echo "STATIC_ROOT='static'" >> $PROJ_NAME/settings.py
 		progress30
 		docker_container
-		if [[ -v OSCAR_APP ]];then
+		if [[ ! -z "$OSCAR_APP" ]];then
 			echo "$(ChangeColor green text)Oscar files configurations ...$(ChangeColor white text)"
 			oscar_configuration
 		else
 			echo "$(ChangeColor green text)Django2 files configurations ...$(ChangeColor white text)"
-			if [[ -v STABLE_DJANGO ]];then
+			if [[ ! -z "$STABLE_DJANGO" ]];then
 				django_stable_configuration
 			else
 				django_2_configuration
@@ -312,7 +312,7 @@ function progress30 {
 }
 
 function docker_container {
-	if [[ -v NOT_POSGRES ]];then
+	if [[ ! -z "$NOT_POSGRES" ]];then
 		echo "Not create env_file $(ChangeColor red text)FAIL$(ChangeColor white text)"
 	else
 		env_file
@@ -322,7 +322,7 @@ function docker_container {
 	echo -e "Creating mime_types...  $(ChangeColor green text)OK$(ChangeColor white text)"
 	mime_types
 	echo -e "Creating docker_file...  $(ChangeColor green text)OK$(ChangeColor white text)"
-	if [[ -v ALPHINE_LINUX ]];then
+	if [[ ! -z "$ALPHINE_LINUX" ]];then
 	    docker_alphine_linux
 	else
 	    docker_file
@@ -558,7 +558,7 @@ function docker_alphine_linux {
 function docker_compose {
 	touch docker-compose.yml
 	echo "version: '3'" >> docker-compose.yml
-	if [[ -v NOT_POSGRES ]];then
+	if [[ ! -z "$NOT_POSGRES" ]];then
 		echo "" >> docker-compose.yml	
 	else
 		echo "" >> docker-compose.yml
@@ -605,7 +605,7 @@ function docker_compose {
       	echo "" >> docker-compose.yml
       	echo "" >> docker-compose.yml
 	fi
-	if [[ -v OSCAR_APP ]];then
+	if [[ ! -z "$OSCAR_APP" ]];then
 	    echo "  elasticsearch:" >> docker-compose.yml
         echo "    #image: docker.elastic.co/elasticsearch/elasticsearch:6.2.1" >> docker-compose.yml
         echo "    image: elasticsearch:2.4.0" >> docker-compose.yml
@@ -637,7 +637,7 @@ function docker_compose {
 	echo "    container_name: $PROJ_NAME" >> docker-compose.yml
 	echo "    build: ." >> docker-compose.yml
 	echo "    restart: \"always\"" >> docker-compose.yml
-	if [[ -v NOT_POSGRES ]];then
+	if [[ ! -z "$NOT_POSGRES" ]];then
 		:
 	else
 		echo "    env_file: .env" >> docker-compose.yml
@@ -651,7 +651,7 @@ function docker_compose {
 	echo "      - .:/code" >> docker-compose.yml
 	echo "    ports:" >> docker-compose.yml
 	echo "      - \"$DOCKER_PORT:$DOCKER_PORT\"" >> docker-compose.yml
-	if [[ -v NOT_POSGRES ]];then
+	if [[ ! -z "$NOT_POSGRES" ]];then
 		echo "" >> docker-compose.yml
 	else
 		echo "    links:" >> docker-compose.yml
@@ -901,7 +901,7 @@ function test_elemek {
 	FILE=$1
 	OPTIONS=$2
 
-	if [[ -v OPTIONS ]];then
+	if [[ ! -z "$OPTIONS" ]];then
 		case ${OPTIONS} in
 
 			-a | --author)

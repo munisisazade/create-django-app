@@ -15,6 +15,6 @@ echo "My local share directory is $TLP_DIRECTORY"
 if [ -d $LOCAL_COMMAND_DIRECTORY ]; then
 	echo "Yes I have"
 fi
-if [ -d $TLP_DIRECTORY ]; then
+if [[ ! -z "$TLP_DIRECTORYs" ]]; then
 	echo "Yes I have"
 fi
