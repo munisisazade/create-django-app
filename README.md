@@ -1,6 +1,11 @@
 # create-django-app #
  
-
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/munisisazade/create-django-app/master/LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/munisisazade/create-django-app.svg)](https://github.com/munisisazade/create-django-app/issues)
+[![GitHub forks](https://img.shields.io/github/forks/munisisazade/create-django-app.svg)](https://github.com/munisisazade/create-django-app/network)
+[![GitHub stars](https://img.shields.io/github/stars/munisisazade/create-django-app.svg)](https://github.com/munisisazade/create-django-app/stargazers)
+[![Apple Macbook](https://img.shields.io/badge/operation%20system-Macbook%20Pro-brightgreen.svg)](https://www.apple.com/lae/macos/mojave/)
+[![Linux Ubuntu](https://img.shields.io/badge/operation%20system-Ubuntu%2016.04+-brightgreen.svg)](https://www.apple.com/lae/macos/mojave/)
 ### --- Installation command ###
 
 First check this bellow command:
