@@ -733,8 +733,10 @@ function oscar_configuration {
 	DJANGO_UP_PROJ_NAME=$(python3 -c 'a="'$PROJ_NAME'";d=[x.capitalize() for x in a.split("_")];print("".join(d))')
 	BASE_LINUX_USERNAME=$(whoami)
 	echo -e "configuration files add"
+	echo -e "JUST FOR DEBUG"
 	mkdir $DEVELOPMENT_PATH
 	cp -r $DEFAULT_DJANGO_PATH/django_app/middleware/ $PROJ_NAME/
+	echo -e "JUST FOR DEBUG $DEFAULT_DJANGO_PATH/django_app/middleware/ $PROJ_NAME/"
 	cp -r $DEFAULT_DJANGO_PATH/django_app/oscar_settings.py $PROJ_NAME/settings.py
 	cp -r $DEFAULT_DJANGO_PATH/django_app/oscar_urls.py $PROJ_NAME/urls.py
 	cp -r $DEFAULT_DJANGO_PATH/django_app/__init__.py $PROJ_NAME/__init__.py
