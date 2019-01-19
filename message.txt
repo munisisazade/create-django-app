@@ -1,3 +1,3 @@
-#432329 new version relase 2.1.0
+#432329 new version relase 2.1.1
 * add new operation system Darwin
 * support all mac operation systems
