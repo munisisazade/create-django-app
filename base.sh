@@ -173,7 +173,7 @@ function base_script {
             exit 1
         fi
         weebhook
-        if [[ ! -z "$BASE_DJANGO" ]];then
+        if [[ -z "$BASE_DJANGO" ]];then
         	OK_PASS="true"
         else
         	BASE_DJANGO="django==1.11.9"
@@ -254,11 +254,12 @@ function base_script {
 			oscar_configuration
 		else
 			echo "$(ChangeColor green text)Django2 files configurations ...$(ChangeColor white text)"
-			if [[ ! -z "$STABLE_DJANGO" ]];then
-				django_stable_configuration
-			else
-				django_2_configuration
-			fi
+			django_stable_configuration
+#			if [[ ! -z "$STABLE_DJANGO" ]];then
+#				django_stable_configuration
+#			else
+#				django_2_configuration
+#			fi
 		fi
 		ask_git
 		finish

@@ -12,6 +12,11 @@ fi
 echo "My local command directory is $LOCAL_COMMAND_DIRECTORY"
 echo "My local share directory is $TLP_DIRECTORY"
 
-if [ -d $LOCAL_COMMAND_DIRECTORY ]; then
-	echo "Yes I have"
+#MUNISS="asdasd"
+
+if [[ ! -z "$MUNISS" ]]; then
+	echo "Beli yoxdur"
+else
+    echo "Var"
 fi
+
