@@ -801,16 +801,31 @@ function django_stable_configuration {
 	cp -r $DEFAULT_DJANGO_PATH/django_app/app/tasks.py $APP_NAME/
 	cp -r $DEFAULT_DJANGO_PATH/django_app/app/urls.py $APP_NAME/
     cp -r $DEFAULT_DJANGO_PATH/django_app/README.md ../$FILE/
-    sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{DOCKER_PORT}|'$DOCKER_PORT'|g' README.md
-	echo -e "Readme change."
-	echo -e "settings.py changed."
-	sed -i -e 's|#{SECRET_KEY}|'$SECRET_KEY'|g' -e 's|#{POSGRES_DB_NAME}|'$POSGRES_DB_NAME'|g' -e 's|#{POSGRES_DB_PASSWORD}|'$POSGRES_DB_PASSWORD'|g' -e 's|#{POSGRES_DB_USER}|'$POSGRES_DB_USER'|g' -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' -e 's|#{DJANGO_UP_APP_NAME}|'$DJANGO_UP_APP_NAME'|g' $PROJ_NAME/settings.py
-	echo -e "Urls py changed"
-	# sed -i -e 's|#{ROOT}|'$ROOT_DIRECTION/$FILE'|g' localhost/docker-compose.yml
-	echo -e "celery configuration"
-	sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' $PROJ_NAME/celery.py
-	sed -i -e 's|#{PROJ_NAME}|'$DJANGO_UP_PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' $PROJ_NAME/urls.py
-	sed -i -e 's|#{APP_NAME}|'$APP_NAME'|g' $APP_NAME/management/commands/ovveride_templates.py
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+	# Detect Operation system is Macbook pro OSX
+        sed -i -e "s/#{PROJ_NAME}/$PROJ_NAME/g" -e "s/#{DOCKER_PORT}/$DOCKER_PORT/g" README.md
+        echo -e "Readme change."
+        echo -e "settings.py changed."
+        sed -i -e "s/#{SECRET_KEY}/$SECRET_KEY/g" -e "s/#{POSGRES_DB_NAME}/$POSGRES_DB_NAME/g" -e "s/#{POSGRES_DB_PASSWORD}/$POSGRES_DB_PASSWORD/g" -e "s/#{POSGRES_DB_USER}/$POSGRES_DB_USER/g" -e "s/#{PROJ_NAME}/$PROJ_NAME/g" -e "s/#{APP_NAME}/$APP_NAME/g" -e "s/#{DJANGO_UP_APP_NAME}/$DJANGO_UP_APP_NAME/g" $PROJ_NAME/settings.py
+        echo -e "Urls py changed"
+        # sed -i -e 's|#{ROOT}|'$ROOT_DIRECTION/$FILE'|g' localhost/docker-compose.yml
+        echo -e "celery configuration"
+        sed -i -e "s/#{PROJ_NAME}/$PROJ_NAME/g" $PROJ_NAME/celery.py
+        sed -i -e "s/#{PROJ_NAME}/$DJANGO_UP_PROJ_NAME/g" -e "s/#{APP_NAME}/$APP_NAME/g" $PROJ_NAME/urls.py
+        sed -i -e "s/#{APP_NAME}/$APP_NAME/g" $APP_NAME/management/commands/ovveride_templates.py
+    else
+        sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{DOCKER_PORT}|'$DOCKER_PORT'|g' README.md
+        echo -e "Readme change."
+        echo -e "settings.py changed."
+        sed -i -e 's|#{SECRET_KEY}|'$SECRET_KEY'|g' -e 's|#{POSGRES_DB_NAME}|'$POSGRES_DB_NAME'|g' -e 's|#{POSGRES_DB_PASSWORD}|'$POSGRES_DB_PASSWORD'|g' -e 's|#{POSGRES_DB_USER}|'$POSGRES_DB_USER'|g' -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' -e 's|#{DJANGO_UP_APP_NAME}|'$DJANGO_UP_APP_NAME'|g' $PROJ_NAME/settings.py
+        echo -e "Urls py changed"
+        # sed -i -e 's|#{ROOT}|'$ROOT_DIRECTION/$FILE'|g' localhost/docker-compose.yml
+        echo -e "celery configuration"
+        sed -i -e 's|#{PROJ_NAME}|'$PROJ_NAME'|g' $PROJ_NAME/celery.py
+        sed -i -e 's|#{PROJ_NAME}|'$DJANGO_UP_PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' $PROJ_NAME/urls.py
+        sed -i -e 's|#{APP_NAME}|'$APP_NAME'|g' $APP_NAME/management/commands/ovveride_templates.py
+    fi
+
 	python manage.py makemigrations
 	python manage.py migrate
 	echo -e "Successfuly done [OK]"
