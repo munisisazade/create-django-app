@@ -1,9 +1,10 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="2.1.0"
+VERSION="2.1.1"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 GIT_DIRECTORY=~/.create-django-app/
+DEVELOPMENT_PATH="_development"
 if [[ "$OSTYPE" == "darwin"* ]]; then
 	# Detect Operation system is Macbook pro OSX
 	DEFAULT_DJANGO_PATH=/usr/local/share
@@ -731,17 +732,17 @@ function oscar_configuration {
 	DJANGO_UP_PROJ_NAME=$(python3 -c 'a="'$PROJ_NAME'";d=[x.capitalize() for x in a.split("_")];print("".join(d))')
 	BASE_LINUX_USERNAME=$(whoami)
 	echo -e "configuration files add"
-	mkdir development
+	mkdir $DEVELOPMENT_PATH
 	cp -r $DEFAULT_DJANGO_PATH/django_app/middleware/ $PROJ_NAME/
 	cp -r $DEFAULT_DJANGO_PATH/django_app/oscar_settings.py $PROJ_NAME/settings.py
 	cp -r $DEFAULT_DJANGO_PATH/django_app/oscar_urls.py $PROJ_NAME/urls.py
 	cp -r $DEFAULT_DJANGO_PATH/django_app/__init__.py $PROJ_NAME/__init__.py
 	cp -r $DEFAULT_DJANGO_PATH/django_app/celery.py $PROJ_NAME/celery.py
-	cp -r $DEFAULT_DJANGO_PATH/django_app/docker-compose.yml development/
-	cp -r $DEFAULT_DJANGO_PATH/django_app/base_user/ ../$FILE/
-	cp -r $DEFAULT_DJANGO_PATH/django_app/oscar_apps/ ../$FILE/
-	cp -r $DEFAULT_DJANGO_PATH/django_app/app/management/ $APP_NAME/
-	cp -r $DEFAULT_DJANGO_PATH/django_app/app/options/ $APP_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/docker-compose.yml $DEVELOPMENT_PATH/docker-compose.yml
+	cp -r $DEFAULT_DJANGO_PATH/django_app/base_user ../$FILE/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/oscar_apps ../$FILE/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/app/management $APP_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/app/options $APP_NAME/
 	cp -r $DEFAULT_DJANGO_PATH/django_app/app/forms.py $APP_NAME/
 	cp -r $DEFAULT_DJANGO_PATH/django_app/app/signals.py $APP_NAME/
 	cp -r $DEFAULT_DJANGO_PATH/django_app/app/tasks.py $APP_NAME/
@@ -782,16 +783,16 @@ function django_stable_configuration {
 	DJANGO_UP_PROJ_NAME=$(python3 -c 'a="'$PROJ_NAME'";d=[x.capitalize() for x in a.split("_")];print("".join(d))')
 	BASE_LINUX_USERNAME=$(whoami)
 	echo -e "configuration files add"
-	mkdir development
-	cp -r $DEFAULT_DJANGO_PATH/django_app/middleware/ $PROJ_NAME/
-	cp -r $DEFAULT_DJANGO_PATH/django_app/settings.py $PROJ_NAME/settings.py
-	cp -r $DEFAULT_DJANGO_PATH/django_app/urls.py $PROJ_NAME/urls.py
+	mkdir $DEVELOPMENT_PATH
+	cp -r $DEFAULT_DJANGO_PATH/django_app/middleware $PROJ_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/settings_django2.py $PROJ_NAME/settings.py
+	cp -r $DEFAULT_DJANGO_PATH/django_app/urls_django2.py $PROJ_NAME/urls.py
 	cp -r $DEFAULT_DJANGO_PATH/django_app/__init__.py $PROJ_NAME/__init__.py
 	cp -r $DEFAULT_DJANGO_PATH/django_app/celery.py $PROJ_NAME/celery.py
-	cp -r $DEFAULT_DJANGO_PATH/django_app/docker-compose.yml development/
-	cp -r $DEFAULT_DJANGO_PATH/django_app/base_user/ ../$FILE/
-	cp -r $DEFAULT_DJANGO_PATH/django_app/app/management/ $APP_NAME/
-	cp -r $DEFAULT_DJANGO_PATH/django_app/app/options/ $APP_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/docker-compose.yml $DEVELOPMENT_PATH/docker-compose.yml
+	cp -r $DEFAULT_DJANGO_PATH/django_app/base_user ../$FILE/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/app/management $APP_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/app/options $APP_NAME/
 	cp -r $DEFAULT_DJANGO_PATH/django_app/app/forms.py $APP_NAME/
 	cp -r $DEFAULT_DJANGO_PATH/django_app/app/signals.py $APP_NAME/
 	cp -r $DEFAULT_DJANGO_PATH/django_app/app/tasks.py $APP_NAME/
@@ -820,7 +821,7 @@ function django_2_configuration {
 	DJANGO_UP_APP_NAME=$(python3 -c 'a="'$APP_NAME'";d=[x.capitalize() for x in a.split("_")];print("".join(d))')
 	DJANGO_UP_PROJ_NAME=$(python3 -c 'a="'$PROJ_NAME'";d=[x.capitalize() for x in a.split("_")];print("".join(d))')
 	echo -e "configuration files add"
-	cp -r $DEFAULT_DJANGO_PATH/django_app/middleware/ $PROJ_NAME/
+	cp -r $DEFAULT_DJANGO_PATH/django_app/middleware $PROJ_NAME/
 	cp -r $DEFAULT_DJANGO_PATH/django_app/settings_django2.py $PROJ_NAME/settings.py
 	cp -r $DEFAULT_DJANGO_PATH/django_app/urls_django2.py $PROJ_NAME/urls.py
 	cp -r $DEFAULT_DJANGO_PATH/django_app/app/management/ $APP_NAME/
@@ -1042,7 +1043,7 @@ case ${COMMAND} in
         fi
         file_dir=${COMMAND}
     	arg=${ARG}
-    	base_script ${file_dir} ${arg}	
+    	base_script ${file_dir} ${arg}
 
 	;;
 
