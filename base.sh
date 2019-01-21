@@ -185,7 +185,7 @@ function base_script {
 	    echo -e "Get into $FILE"
 	    cd $FILE
 	    echo -e "First create virtual enviroment"
-	    progress30
+#	    progress30
 	    echo -e "$(ChangeColor red text)"
 		python3 -m venv .venv
 		if [ $? -eq 0 ]; then
@@ -247,7 +247,7 @@ function base_script {
 		echo -e "Creating Database .."
 		# python manage.py migrate
 		echo "STATIC_ROOT='static'" >> $PROJ_NAME/settings.py
-		progress30
+#		progress30
 		docker_container
 		if [[ ! -z "$OSCAR_APP" ]];then
 			echo "$(ChangeColor green text)Oscar files configurations ...$(ChangeColor white text)"
