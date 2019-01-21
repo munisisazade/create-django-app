@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author Munis Isazade Django developer
-VERSION="2.1.1"
+VERSION="2.1.2"
 ERROR_STATUS=0
 ROOT_DIRECTION=$(pwd)
 GIT_DIRECTORY=~/.create-django-app/
@@ -315,6 +315,7 @@ function progress30 {
 }
 
 function docker_container {
+    REDIS_PASSWORD=$(python -c 'import random, string; result = "".join([random.choice(string.ascii_letters + string.digits) for i in range(16)]); print(result)')
 	if [[ ! -z "$NOT_POSGRES" ]];then
 		echo "Not create env_file $(ChangeColor red text)FAIL$(ChangeColor white text)"
 	else
@@ -334,6 +335,8 @@ function docker_container {
 	docker_compose
 	echo -e "Creating celery_dockerfile...  $(ChangeColor green text)OK$(ChangeColor white text)"
 	celery_dockerfile
+	echo -e "Creating redis_dockerfile...  $(ChangeColor green text)OK$(ChangeColor white text)"
+	redis_dockerfile
 	echo -e "Creating uwsgi_ini...  $(ChangeColor green text)OK$(ChangeColor white text)"
 	uwsgi_ini
 }
@@ -358,6 +361,11 @@ function env_file {
 	echo "POSTGRES_PASSWORD=$POSGRES_DB_PASSWORD" >> .env
 	echo "POSTGRES_HOST=postgres" >> .env
 	echo "POSTGRES_PORT=5432" >> .env
+	echo "# Redis" >> .env
+	echo "REDIS_HOST=redis" >> .env
+	echo "REDIS_PORT=6379" >> .env
+	echo "REDIS_PASSWORD=$REDIS_PASSWORD" >> .env
+
 }
 
 function mime_types {
@@ -580,13 +588,16 @@ function docker_compose {
 		echo "" >> docker-compose.yml
 		echo "" >> docker-compose.yml
 		echo "  redis:" >> docker-compose.yml
-    	echo "    image: redis:4.0.11" >> docker-compose.yml
-    	echo "    restart: \"on-failure\"" >> docker-compose.yml
+    	echo "    build: " >> docker-compose.yml
+    	echo "      context: ." >> docker-compose.yml
+    	echo "      dockerfile: redis.dockerfile" >> docker-compose.yml
+    	echo "    restart: \"always\"" >> docker-compose.yml
     	echo "    container_name: redis" >> docker-compose.yml
     	echo "    ports:" >> docker-compose.yml
      	echo "      - 6379:6379" >> docker-compose.yml
     	echo "    volumes:" >> docker-compose.yml
       	echo "      - ./redisdb:/var/lib/redis" >> docker-compose.yml
+      	echo "    env_file: .env" >> docker-compose.yml
       	echo "" >> docker-compose.yml
       	echo "" >> docker-compose.yml
   		echo "  celery:" >> docker-compose.yml
@@ -693,6 +704,15 @@ function celery_dockerfile {
 	echo "" >> celery.dockerfile
 	echo "USER \${APP_USER}" >> celery.dockerfile
 	echo "ADD . \${APP_ROOT}" >> celery.dockerfile
+}
+
+function redis_dockerfile {
+    touch redis.dockerfile
+	echo "FROM redis:4.0.11" >> redis.dockerfile
+	echo "" >> redis.dockerfile
+	echo "ENV REDIS_PASSWORD $REDIS_PASSWORD" >> redis.dockerfile
+	echo "" >> redis.dockerfile
+	echo 'CMD ["sh", "-c", "exec redis-server --requirepass \"$REDIS_PASSWORD\""]' >> redis.dockerfile
 }
 
 function uwsgi_ini {
@@ -811,7 +831,7 @@ function django_stable_configuration {
         sed -i -e "s/#{POSGRES_DB_NAME}/$POSGRES_DB_NAME/g" $PROJ_NAME/settings.py
         sed -i -e "s/#{POSGRES_DB_PASSWORD}/$POSGRES_DB_PASSWORD/g" $PROJ_NAME/settings.py
         sed -i -e "s/#{POSGRES_DB_USER}/$POSGRES_DB_USER/g" $PROJ_NAME/settings.py
-        sed -i -e "s/#{PROJ_NAME}/$PROJ_NAME/g" $PROJ_NAME/settings.py 
+        sed -i -e "s/#{PROJ_NAME}/$PROJ_NAME/g" $PROJ_NAME/settings.py
         sed -i -e "s/#{APP_NAME}/$APP_NAME/g" $PROJ_NAME/settings.py
         sed -i -e "s/#{DJANGO_UP_APP_NAME}/$DJANGO_UP_APP_NAME/g" $PROJ_NAME/settings.py
         echo -e "Urls py changed"
@@ -833,7 +853,6 @@ function django_stable_configuration {
         sed -i -e 's|#{PROJ_NAME}|'$DJANGO_UP_PROJ_NAME'|g' -e 's|#{APP_NAME}|'$APP_NAME'|g' $PROJ_NAME/urls.py
         sed -i -e 's|#{APP_NAME}|'$APP_NAME'|g' $APP_NAME/management/commands/ovveride_templates.py
     fi
-
 	python manage.py makemigrations
 	python manage.py migrate
 	echo -e "Successfuly done [OK]"
