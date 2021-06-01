@@ -26,6 +26,6 @@ requests==2.19.1
 requests-oauthlib==1.0.0
 six==1.11.0
 Unidecode==1.0.23
-urllib3==1.23
+urllib3==1.26.5
 uWSGI==2.0.17
 vine==1.1.4
